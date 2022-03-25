@@ -72,7 +72,7 @@ ohos_executable("wukong") {
     "ipc:ipc_core",
     "input:libmmi-client",
     "samgr_standard:samgr_proxy",
-	"hisysevent_native:libhisysevent",
+    "hisysevent_native:libhisysevent",
     "multimedia_image_standard:image_native",
     "window_manager:libdm",
     "window_manager:libwm",
