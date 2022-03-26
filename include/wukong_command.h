@@ -74,10 +74,7 @@ namespace OHOS {
             ErrCode HandleUnknownOption(const char optopt);
             ErrCode HandleNormalOption(const int option);
             ErrCode PrintResultOfStartAbility(const ErrCode result, int index);
-            ErrCode WriteWuKongBundleInfo(sptr<IBundleMgr> bundleMgrProxy, const std::vector<BundleInfo> bundleInfos);
-
-            sptr<IBundleMgr> GetBundleMgrProxy() const;
-
+            
             int FindElement(std::vector<std::string> bundleList, std::string key);
 
             int getAbilityIndex();
@@ -85,7 +82,7 @@ namespace OHOS {
             std::string bundleNameArgs = "";
             std::vector<std::string> bundleList;
             std::vector<std::string> abilityList;
-            std::vector<std::string> visibleList;
+            
             int countArgs = 10;
             int intervalArgs = 1500;
             int seedArgs = -1;
