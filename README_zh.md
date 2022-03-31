@@ -81,7 +81,7 @@ wukong exec 为主命令，-s 参数设置随机种子，10为种子值；-i 参
 
 ### 下载代码
 
-在工程test目录下执行如下命令下载测试框架仓代码。
+在工程test目录下执行如下命令下载wukong仓代码。
 
 ```shell
 git clone https://gitee.com/openharmony/wukong.git -b OpenHarmony-3.1-Release
@@ -96,7 +96,7 @@ git clone https://gitee.com/openharmony/wukong.git -b OpenHarmony-3.1-Release
     "name": "wukong"
   },
 ```
-修改productdefine_common仓中 rk3568.json文件，增加如下字段。
+修改productdefine_common仓中rk3568.json文件，增加如下字段。
 ```shell
 "wukong:wukong":{},
 ```
