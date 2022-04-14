@@ -11,6 +11,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * Description: define the csvfile's layout and export data into csvfile in this layout.
  */
 
 
@@ -37,8 +39,13 @@ public:
         uint64_t spanId;
         uint64_t pspanId;
         uint64_t traceFlag;
-    };
+    };//all those are the properties of the csvfile.
 
+    /**
+     * @brief writeheader of csvFile
+     * @param csvFile the file that save the information when exceptions occur. 
+     * @return -
+     */ 
     static void WriteHeader(std::ofstream &csvFile)
     {
         csvFile << "Domain" << ',';
@@ -55,6 +62,12 @@ public:
         csvFile << "TraceFlag" << std::endl;
     }
 
+    /**
+     * @brief context of csvFile
+     * @param csvFile the file that save the information when exceptions occur. 
+     * @param data the data which needs to be writen in the csvfile.
+     * @return -
+     */ 
     static void WriteOneLine(std::ofstream &csvFile, const OneLineData &data)
     {
         csvFile << data.domain << ',';

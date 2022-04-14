@@ -11,6 +11,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * Description: to listen Wukong process and catch the exception information of the process.
  */
 
 #ifndef WUKONG_WUKONG_SYSEVENT_LISTENER_H
@@ -22,12 +24,31 @@ namespace OHOS {
     namespace AppExecFwk {
         class WuKongSysEventListener : public OHOS::HiviewDFX::HiSysEventSubscribeCallBack {
         public:
+            /**
+            * @brief to save targetCsvFile into csvFile.
+            * @param targetCsvFile
+            */
             explicit WuKongSysEventListener(std::ofstream& targetCsvFile) : csvFile(targetCsvFile) {}
+
+            /**
+            * @brief to export the exception information, such as domain, eventname, eventType, eventDetail.
+            * @param domain the location of the event when the exception occurs.
+            * @param eventName the eventname of the event when the exception occurs.
+            * @param eventType the event type of the event when the exception occurs.
+            * @param eventDetail  the detail of the event when the exception occurs.
+            * @return -
+            */
             void OnHandle(const std::string& domain, const std::string& eventName, const int eventType,
                           const std::string& eventDetail) override;
+
+            /**
+            * @brief to export a setence: "Listener service Died"
+            * @return -
+            */ 
             void OnServiceDied() override;
             ~WuKongSysEventListener() override {}
         private:
+            //the file that save the information when exceptions occur. 
             std::ofstream& csvFile;
         };
     } // namespace AppExecFwk

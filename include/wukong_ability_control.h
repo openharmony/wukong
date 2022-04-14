@@ -11,6 +11,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * Description: to get and control the white/black list of the app.
  */
 
 #ifndef WUKONG_WUKONG_ABILITY_CONTROL_H
@@ -24,10 +26,26 @@ namespace OHOS {
     namespace AppExecFwk {
         class WuKongAbilityController : : public OHOS::AppExecFwk::AbilityControllerStub {
         public:
+            /**
+             * @brief set app's white list.
+             * @param AllowAbilityList a list show what app is allowed in the test.
+             * @return if the list which decide what app is allowed has been known.
+             */
             bool SetAbilityList(const std::vector<std::string> &AllowAbilityList);
 
+            /**
+             * @brief cold start.
+             * @param want
+             * @param bundleName
+             * @return whether this function is realize or not.
+             */
             virtual bool AllowAbilityStart(const Want &want, const std::string &bundleName) override;
 
+            /**
+             * @brief turn to background.
+             * @param bundleName
+             * @return whether this function is realize or not.
+             */
             virtual bool AllowAbilityBackground(const std::string &bundleName) override;
 
         private:
