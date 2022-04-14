@@ -239,8 +239,14 @@ namespace OHOS {
                 return OHOS::ERR_INVALID_VALUE;
             }
             auto callBackPtr = InputEventCallback::GetPtr();
+            if (callBackPtr == nullptr) {
+                std::cout << "nullptr" << std::endl;
+            }
             int32_t id1 = MMI::InputManager::GetInstance()->AddMonitor(callBackPtr);
-            std::cout << id1 << std::endl;
+            if (id1 == -1) {
+                std::cout << "Startup Failed!" << std::endl;
+            }
+            std::cout << "Started Recording Successfully..." << std::endl;
             int flag = getc(stdin);
             std::cout << flag << std::endl;
             return OHOS::ERR_OK;
