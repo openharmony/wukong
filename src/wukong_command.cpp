@@ -13,16 +13,6 @@
  * limitations under the License.
  */
 
-#include "wukong_command.h"
-#include "wukong_app_manager.h"
-#include "wukong_event_manager.h"
-#include "wukong_exception_manager.h"
-#include "bundle_mgr_proxy.h"
-
-#include "ability_manager_client.h"
-#include "system_ability_definition.h"
-#include "iservice_registry.h"
-#include "launcher_service.h"
 
 #include <iostream>
 #include <getopt.h>
@@ -30,6 +20,18 @@
 #include <chrono>
 #include <thread>
 #include <unistd.h>
+
+#include "wukong_app_manager.h"
+#include "wukong_event_manager.h"
+#include "wukong_exception_manager.h"
+#include "bundle_mgr_proxy.h"
+#include "ability_manager_client.h"
+#include "system_ability_definition.h"
+#include "iservice_registry.h"
+#include "launcher_service.h"
+
+#include "wukong_command.h"
+
 
 using namespace OHOS::AAFwk;
 
@@ -64,7 +66,7 @@ namespace OHOS {
                 {"seed", required_argument, nullptr, 's'},
                 {"touch", required_argument, nullptr, 't'},
                 {"version", no_argument, nullptr, 'v'},
-                {"spec_insomnia", no_argument, nullptr, 'k'},
+                {"wake_sleep", no_argument, nullptr, 'k'},
                 {"motion", required_argument, nullptr, 'l'},
                 {"xSrc", required_argument, nullptr, 'x'},
                 {"ySrc", required_argument, nullptr, 'y'},

@@ -38,7 +38,7 @@ public:
         uint64_t pspanId;
         uint64_t traceFlag;
     };
-    //all those are the properties of the csvfile.
+    // all those are the properties of the csvfile.
 
     /**
      * @brief writeheader of csvFile

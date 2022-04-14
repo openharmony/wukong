@@ -46,7 +46,7 @@ namespace OHOS {
                                                 "  -v, version\n"
                                                 "  -l, motion event\n"
                                                 "  -T, time\n"
-                                                "  --spec_insomnia, spec test: sleep and awake\n";
+                                                "  --wake_sleep, spec test: sleep and awake\n";
 
             const std::string STRING_WUKONG_INFO_OK = "wukong info successfully.\n";
             const std::string STRING_WUKONG_INFO_NG = "error: failed to wukong info.\n";

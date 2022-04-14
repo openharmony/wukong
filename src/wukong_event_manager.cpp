@@ -15,6 +15,7 @@
 
 
 #include <unistd.h>
+#include <iostream>
 #include "input_manager.h"
 #include "wukong_event_manager.h"
 
