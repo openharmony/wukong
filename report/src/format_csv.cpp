@@ -21,7 +21,10 @@ FormatCSV::FormatCSV() : Format() {}
 
 FormatCSV::~FormatCSV() {}
 
-ErrCode FormatCSV::FormatDetail() { return OHOS::ERR_OK; }
+ErrCode FormatCSV::FormatDetail()
+{
+	return OHOS::ERR_OK;
+}
 
 }  // namespace WuKong
 }  // namespace OHOS

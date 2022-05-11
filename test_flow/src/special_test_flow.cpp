@@ -58,6 +58,8 @@ bool g_commandTOUCHENABLE = false;
 bool g_commandPOWERENABLE = false;
 bool g_commandGOBACKENABLE = false;
 bool g_commandCOUNTENABLE = false;
+
+static int NUMBER_TWO = 2;
 }  // namespace
 using namespace std;
 
@@ -77,7 +79,7 @@ ErrCode SpecialTest::EnvInit()
     ErrCode result = OHOS::ERR_OK;
     const std::string paramError = "param is incorrect";
     if (g_commandSWAPENABLE == true) {
-        if (swapStartPoint_.size() == 2 && swapEndPoint_.size() == 2) {
+        if (swapStartPoint_.size() == NUMBER_TWO && swapEndPoint_.size() == NUMBER_TWO) {
             // set the params of touch special test
             std::shared_ptr<SwapParam> swapParam = std::make_shared<SwapParam>();
             swapParam->startX_ = stoi(swapStartPoint_[0]);
@@ -94,7 +96,7 @@ ErrCode SpecialTest::EnvInit()
             result = OHOS::ERR_INVALID_VALUE;
         }
     } else if (g_commandTOUCHENABLE == true) {
-        if (touchParam_.size() == 2) {
+        if (touchParam_.size() == NUMBER_TWO) {
             // set the params of swap special test
             std::shared_ptr<TouchParam> touchParam = std::make_shared<TouchParam>();
             touchParam->x_ = stoi(touchParam_[0]);

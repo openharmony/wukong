@@ -16,7 +16,6 @@
 #ifndef TEST_WUKONG_SPECAIL_TEST_OBJECT_H
 #define TEST_WUKONG_SPECAIL_TEST_OBJECT_H
 
-#include <stdio.h>
 #include <string>
 
 namespace OHOS {
@@ -26,13 +25,16 @@ public:
     SpcialTestObject(){};
     virtual ~SpcialTestObject(){};
     // convert coordinates to string
-    virtual std::string toString() { return std::to_string(objectType_); }
+    virtual std::string toString()
+    {
+        return std::to_string(objectType_);
+    }
     int objectType_;
 };
 class SwapParam : public SpcialTestObject {
 public:
-    SwapParam(){};
-    virtual ~SwapParam(){};
+    SwapParam() {};
+    virtual ~SwapParam() {};
 
     virtual std::string toString()
     {

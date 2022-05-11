@@ -43,16 +43,26 @@ enum InputType {
  */
 class InputAction {
 public:
-    InputAction(){};
-    virtual ~InputAction(){};
-    virtual ErrCode OrderInput(std::shared_ptr<SpcialTestObject>& specialTestObject) { return OHOS::ERR_INVALID_VALUE; }
+    InputAction() {};
+    virtual ~InputAction() {};
+    virtual ErrCode OrderInput(std::shared_ptr<SpcialTestObject>& specialTestObject)
+    {
+        return OHOS::ERR_INVALID_VALUE;
+    }
 
     /**
      * @brief input a touch event in random test.
      * @return Return ERR_OK on success， others on failure.
      */
-    virtual ErrCode RandomInput() { return OHOS::ERR_INVALID_VALUE; }
-    virtual ErrCode GetInputInfo() { return OHOS::ERR_INVALID_VALUE; }
+    virtual ErrCode RandomInput()
+    {
+        return OHOS::ERR_INVALID_VALUE;
+    }
+
+    virtual ErrCode GetInputInfo()
+    {
+        return OHOS::ERR_INVALID_VALUE;
+    }
 };
 }  // namespace WuKong
 }  // namespace OHOS

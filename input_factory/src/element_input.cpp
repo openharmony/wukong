@@ -14,10 +14,6 @@
  */
 
 #include "element_input.h"
-
-#include <iostream>
-#include <string>
-
 #include "input_manager.h"
 #include "wukong_define.h"
 
@@ -27,7 +23,10 @@ ElementInput::ElementInput() : InputAction() {}
 
 ElementInput::~ElementInput() {}
 
-ErrCode ElementInput::OrderInput(std::shared_ptr<SpcialTestObject>& specialTestObject) { return OHOS::ERR_OK; }
+ErrCode ElementInput::OrderInput(std::shared_ptr<SpcialTestObject>& specialTestObject)
+{
+    return OHOS::ERR_OK;
+}
 
 ErrCode ElementInput::RandomInput()
 {
@@ -35,6 +34,10 @@ ErrCode ElementInput::RandomInput()
     return result;
 }
 
-ErrCode ElementInput::GetInputInfo() { return OHOS::ERR_OK; }
+ErrCode ElementInput::GetInputInfo()
+{
+    return OHOS::ERR_OK;
+}
+
 }  // namespace WuKong
 }  // namespace OHOS

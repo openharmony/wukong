@@ -33,7 +33,10 @@ public:
 
     void SetOnAbilityDisConnectCallback(std::function<void()> onDisConnectCb);
 
-    bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent) override { return false; }
+    bool OnKeyPressEvent(const std::shared_ptr<MMI::KeyEvent> &keyEvent) override
+    {
+        return false;
+    }
 
     uint64_t GetLastEventMillis();
 

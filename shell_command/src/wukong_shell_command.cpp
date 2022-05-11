@@ -14,11 +14,6 @@
  */
 
 #include "wukong_shell_command.h"
-
-#include <cstdio>
-#include <iostream>
-#include <string>
-
 #include "ability_manager_client.h"
 #include "appexecfwk_errors.h"
 #include "bundle_mgr_proxy.h"

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include <stdio.h>
+#include <cstdio>
 #include <sys/stat.h>
 
 #include "semaphore_ex.h"
@@ -23,7 +23,9 @@
 
 using namespace OHOS::WuKong;
 
-void WuKongMutexFile()
+static int NUMBER_TWO = 2;
+
+static void WuKongMutexFile()
 {
     int fileExist_ = access("/dev/shm", F_OK);
     if (fileExist_ == 0) {
@@ -37,7 +39,7 @@ void WuKongMutexFile()
     }
 }
 
-void InitSemaphore(OHOS::NamedSemaphore& sem, const int count)
+static void InitSemaphore(OHOS::NamedSemaphore& sem, const int count)
 {
     bool res = sem.Open();
     int value = 0;
@@ -58,7 +60,7 @@ void InitSemaphore(OHOS::NamedSemaphore& sem, const int count)
     sem.Close();
 }
 
-bool IsRunning(OHOS::NamedSemaphore& sem)
+static bool IsRunning(OHOS::NamedSemaphore& sem)
 {
     bool result = false;
     sem.Open();
@@ -84,7 +86,7 @@ bool IsRunning(OHOS::NamedSemaphore& sem)
             for (auto i : strs) {
                 DEBUG_LOG_STR("Pid: (%s)", i.c_str());
             }
-            if (strs.size() >= 2) {
+            if (strs.size() >= NUMBER_TWO) {
                 result = true;
             } else {
                 sem.Create();

@@ -15,8 +15,6 @@
 
 #include "page_tree.h"
 
-#include <string>
-
 namespace OHOS {
 namespace WuKong {
 
@@ -25,12 +23,25 @@ PageTree::PageTree() : WuKongTree() {}
 
 PageTree::~PageTree() {}
 
-ErrCode PageTree::GetId() { return OHOS::ERR_OK; }
+ErrCode PageTree::GetId()
+{
+	return OHOS::ERR_OK;
+}
 
-ErrCode PageTree::GetRoot() { return OHOS::ERR_OK; }
+ErrCode PageTree::GetRoot()
+{
+	return OHOS::ERR_OK;
+}
 
-ErrCode PageTree::AddChild() { return OHOS::ERR_OK; }
+ErrCode PageTree::AddChild()
+{
+	return OHOS::ERR_OK;
+}
 
-ErrCode PageTree::PreOrderList() { return OHOS::ERR_OK; }
+ErrCode PageTree::PreOrderList()
+{
+	return OHOS::ERR_OK;
+}
+
 }  // namespace WuKong
 }  // namespace OHOS

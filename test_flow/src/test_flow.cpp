@@ -14,10 +14,6 @@
  */
 
 #include "test_flow.h"
-
-#include <getopt.h>
-#include <iostream>
-
 #include "report.h"
 
 namespace OHOS {

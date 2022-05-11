@@ -15,7 +15,6 @@
 
 #include "touch_input.h"
 
-#include <iostream>
 #include <string>
 
 #include "input_manager.h"

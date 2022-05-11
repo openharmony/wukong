@@ -162,7 +162,7 @@ ErrCode RandomTest::EnvInit()
     if (g_commandSEEDENABLE) {
         srand(seedArgs_);
     } else {
-        srand((unsigned int)time(nullptr));
+        (void)srand((unsigned int)time(nullptr));
         seedArgs_ = (int)time(nullptr);
     }
     TEST_RUN_LOG(("Seed: " + std::to_string(seedArgs_)).c_str());

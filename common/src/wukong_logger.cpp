@@ -1,5 +1,5 @@
 /*
- *Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -42,7 +42,7 @@ const int LOG_PRINTER_TIMEOUT = 500;
 }  // namespace
 
 Logger::Logger() : logPrinter_()
-{ /*init buf*/
+{ /* init buf */
 }
 
 /**
@@ -83,7 +83,7 @@ bool Logger::Start()
         return true;
     }
 
-    /*start read Queue Thread*/
+    /* start read Queue Thread */
     printerRunning_ = true;
     logPrinter_.Start(LOGGER_THREAD_NAME);
 
@@ -95,7 +95,7 @@ bool Logger::Start()
 
 void Logger::Stop()
 {
-    /*release readQueueThread*/
+    /* release readQueueThread */
     if (outputLevel_ <= LOG_LEVEL_TRACK) {
         std::cout << "Logger::Stop" << std::endl;
     }
@@ -109,11 +109,11 @@ void Logger::Stop()
 void Logger::Print(LOG_LEVEL level, const char *format, ...)
 {
     char writeBuf[LOG_CONTENT_LENGTH] = {0};
-    /*check logger_level*/
+    /* check logger_level */
     if (level < outputLevel_ && level < LOG_LEVEL_DEBUG) {
         return;
     }
-    /*format output content*/
+    /* format output content */
     va_list args;
     va_start(args, format);
     int ret = vsnprintf(writeBuf, LOG_CONTENT_LENGTH, format, args);
@@ -158,7 +158,7 @@ bool Logger::PrinterThread::Run()
         std::cout << "ERR: Logger printer file cannot open" << std::endl;
         return false;
     }
-    /*read form queue output target fd*/
+    /* read form queue output target fd */
     printer << "Logger::PrinterThread::Run start" << std::endl;
     const auto timeout = std::chrono::milliseconds(LOG_PRINTER_TIMEOUT);
     while (true) {

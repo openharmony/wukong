@@ -21,7 +21,10 @@ StatisticsCoverage::StatisticsCoverage() : Statistics() {}
 
 StatisticsCoverage::~StatisticsCoverage() {}
 
-ErrCode StatisticsCoverage::StatisticsDetail() { return ERR_OK; }
+ErrCode StatisticsCoverage::StatisticsDetail()
+{
+	return ERR_OK;
+}
 
 }  // namespace WuKong
 }  // namespace OHOS

@@ -41,7 +41,6 @@ namespace WuKong {
 #define WARN_LOG(str) Logger::GetInstance()->Print(LOG_LEVEL_WARN, "WRN : (%5d) %s : " #str, __LINE__, __func__)
 #define ERROR_LOG(str) Logger::GetInstance()->Print(LOG_LEVEL_ERROR, "ERR : (%5d) %s : " #str, __LINE__, __func__)
 #define TEST_RUN_LOG(str) Logger::GetInstance()->Print(LOG_LEVEL_INFO, "RUN : %s", str)
-
 }  // namespace WuKong
 }  // namespace OHOS
 #endif  // TEST_WUKONG_COMMON_H

@@ -14,10 +14,6 @@
  */
 
 #include "swap_input.h"
-
-#include <iostream>
-#include <string>
-
 #include "input_manager.h"
 #include "multimode_manager.h"
 #include "wukong_define.h"

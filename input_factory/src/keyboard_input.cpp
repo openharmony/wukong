@@ -14,10 +14,6 @@
  */
 
 #include "keyboard_input.h"
-
-#include <iostream>
-#include <string>
-
 #include "multimode_manager.h"
 #include "wukong_define.h"
 

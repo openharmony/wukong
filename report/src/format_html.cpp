@@ -21,7 +21,10 @@ FormatHTML::FormatHTML() : Format() {}
 
 FormatHTML::~FormatHTML() {}
 
-ErrCode FormatHTML::FormatDetail() { return OHOS::ERR_OK; }
+ErrCode FormatHTML::FormatDetail()
+{
+	return OHOS::ERR_OK;
+}
 
 }  // namespace WuKong
 }  // namespace OHOS

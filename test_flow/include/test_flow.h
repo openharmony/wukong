@@ -37,7 +37,7 @@ using namespace std;
 class TestFlow {
 public:
     TestFlow(WuKongShellCommand &shellcommand);
-    virtual ~TestFlow(){};
+    virtual ~TestFlow() {};
 
     /**
      * @brief Check the command arguments, and set the command result receiver.
