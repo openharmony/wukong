@@ -26,7 +26,6 @@
 #include "thread_ex.h"
 namespace OHOS {
 namespace WuKong {
-
 enum LOG_LEVEL {
     LOG_LEVEL_TRACK = 0,
     LOG_LEVEL_DEBUG,
@@ -41,7 +40,7 @@ enum WK_LOG_OUTPUT_TYPE {
     HILOG_OUTPUT = 0x0004,
 };
 
-class Logger : public DelayedSingleton<Logger> {
+class WuKongLogger : public DelayedSingleton<WuKongLogger> {
 public:
     /**
      * @brief logger start
@@ -65,7 +64,7 @@ public:
      */
     void Print(LOG_LEVEL level, const char *format, ...);
 
-    DECLARE_DELAYED_SINGLETON(Logger);
+    DECLARE_DELAYED_SINGLETON(WuKongLogger);
 
 private:
     class PrinterThread : public OHOS::Thread {

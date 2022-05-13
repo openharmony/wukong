@@ -31,6 +31,7 @@
 #include <unistd.h>
 
 #include "wukong_util.h"
+#include "wukong_define.h"
 
 namespace OHOS {
 namespace WuKong {
@@ -41,14 +42,14 @@ const int LOG_CONTENT_LENGTH = 256;
 const int LOG_PRINTER_TIMEOUT = 500;
 }  // namespace
 
-Logger::Logger() : logPrinter_()
+WuKongLogger::WuKongLogger() : logPrinter_()
 { /* init buf */
 }
 
 /**
  * @brief: release logfile fd
  */
-Logger::~Logger()
+WuKongLogger::~WuKongLogger()
 {
     if (outputLevel_ <= LOG_LEVEL_TRACK) {
         std::cout << "Logger::~Logger" << std::endl;
@@ -60,7 +61,7 @@ Logger::~Logger()
     }
 }
 
-bool Logger::Start()
+bool WuKongLogger::Start()
 {
     if (outputLevel_ <= LOG_LEVEL_TRACK) {
         std::cout << "Logger::Start" << std::endl;
@@ -75,7 +76,7 @@ bool Logger::Start()
             }
         }
         logFileName_.append(DEFAULT_DIR);
-        logFileName_ += "wukong_" + Util::GetInstance()->GetStartRunTime() + ".log";
+        logFileName_ += "wukong_" + WuKongUtil::GetInstance()->GetStartRunTime() + ".log";
     }
 
     if (logPrinter_.IsRunning()) {
@@ -93,7 +94,7 @@ bool Logger::Start()
     return true;
 }
 
-void Logger::Stop()
+void WuKongLogger::Stop()
 {
     /* release readQueueThread */
     if (outputLevel_ <= LOG_LEVEL_TRACK) {
@@ -106,7 +107,7 @@ void Logger::Stop()
     }
 }
 
-void Logger::Print(LOG_LEVEL level, const char *format, ...)
+void WuKongLogger::Print(LOG_LEVEL level, const char *format, ...)
 {
     char writeBuf[LOG_CONTENT_LENGTH] = {0};
     /* check logger_level */
@@ -144,9 +145,9 @@ void Logger::Print(LOG_LEVEL level, const char *format, ...)
 /**
  * @brief read queue and print log to file
  */
-bool Logger::PrinterThread::Run()
+bool WuKongLogger::PrinterThread::Run()
 {
-    std::shared_ptr<Logger> self = Logger::GetInstance();
+    std::shared_ptr<WuKongLogger> self = WuKongLogger::GetInstance();
     if (!self->printerRunning_) {
         return false;
     }
@@ -159,20 +160,21 @@ bool Logger::PrinterThread::Run()
         return false;
     }
     /* read form queue output target fd */
-    printer << "Logger::PrinterThread::Run start" << std::endl;
+    printer << "WuKongLogger::PrinterThread::Run start" << std::endl;
     const auto timeout = std::chrono::milliseconds(LOG_PRINTER_TIMEOUT);
     while (true) {
-        // wait new log.
+        // wait new log
         if (self->printerRunning_) {
             if (self->outputLevel_ <= LOG_LEVEL_TRACK) {
-                printer << "Logger::PrinterThread::Run wait start" << std::endl;
+                printer << "WuKongLogger::PrinterThread::Run wait start" << std::endl;
             }
             self->cvWaitPrint_.wait_for(lk, timeout);
             if (self->outputLevel_ <= LOG_LEVEL_TRACK) {
-                printer << "Logger::PrinterThread::Run wait end" << std::endl;
+                printer << "WuKongLogger::PrinterThread::Run wait end" << std::endl;
             }
         }
-        self->mtxQueue_.lock(); // read queue buffer to thread buffer.
+        // read queue buffer to thread buffer.
+        self->mtxQueue_.lock();
         // the buffer queue is empty and main wait stop, retrun this thread.
         if (self->bufferQueue_.empty() && !self->printerRunning_) {
             break;
@@ -204,7 +206,7 @@ bool Logger::PrinterThread::Run()
             }
         }
     }
-    printer << "Logger::PrinterThread::Run end" << std::endl;
+    printer << "WuKongLogger::PrinterThread::Run end" << std::endl;
     printer.close();
     return false;
 }

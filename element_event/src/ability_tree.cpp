@@ -23,19 +23,19 @@ AbilityTree::AbilityTree() : WuKongTree() {}
 AbilityTree::~AbilityTree() {}
 ErrCode AbilityTree::GetId()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 ErrCode AbilityTree::GetRoot()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 ErrCode AbilityTree::AddChild()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 ErrCode AbilityTree::PreOrderList()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 
 }  // namespace WuKong

@@ -29,7 +29,7 @@ ErrCode AppswitchInput::RandomInput()
     std::vector<std::string> bundleList;
     std::vector<std::string> abilityList;
     int index = -1;
-    Util::GetInstance()->GetBundleList(bundleList, abilityList);
+    WuKongUtil::GetInstance()->GetBundleList(bundleList, abilityList);
     index = GetAbilityIndex(bundleList);
     // start ability through bundle information
     result = AppManager::GetInstance()->StartAbilityByBundleInfo(abilityList[index], bundleList[index]);
@@ -43,7 +43,7 @@ ErrCode AppswitchInput::PrintResultOfStartAbility(const ErrCode result, int inde
 {
     std::vector<std::string> bundleList;
     std::vector<std::string> abilityList;
-    Util::GetInstance()->GetBundleList(bundleList, abilityList);
+    WuKongUtil::GetInstance()->GetBundleList(bundleList, abilityList);
     if (result == OHOS::ERR_OK) {
         INFO_LOG_STR("Bundle Name: (%s) Startup SUCCESSFUL", bundleList[index].c_str());
     } else {
@@ -60,15 +60,15 @@ ErrCode AppswitchInput::GetInputInfo()
 int AppswitchInput::GetAbilityIndex(std::vector<std::string> &bundlelist)
 {
     int index = -1;
-    std::vector<std::string> whitelist;
+    std::vector<std::string> allowlist;
     std::vector<std::string> validlist;
-    Util::GetInstance()->GetWhiteList(whitelist);
-    Util::GetInstance()->GetValidBundleList(validlist);
+    WuKongUtil::GetInstance()->GetAllowList(allowlist);
+    WuKongUtil::GetInstance()->GetValidBundleList(validlist);
     if (bundlelist.size() > 0) {
-        if (whitelist.size() > 0) {
-            index = Util::GetInstance()->FindElement(bundlelist, whitelist.at(rand() % whitelist.size()));
+        if (allowlist.size() > 0) {
+            index = WuKongUtil::GetInstance()->FindElement(bundlelist, allowlist.at(rand() % allowlist.size()));
         } else if (validlist.size() > 0) {
-            index = Util::GetInstance()->FindElement(bundlelist, validlist.at(rand() % validlist.size()));
+            index = WuKongUtil::GetInstance()->FindElement(bundlelist, validlist.at(rand() % validlist.size()));
         } else {
             index = rand() % bundlelist.size();
         }

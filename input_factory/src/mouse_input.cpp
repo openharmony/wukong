@@ -36,7 +36,7 @@ ErrCode MouseInput::RandomInput()
     int32_t screenHeight = -1;
     int mouseType = MMI::PointerEvent::BUTTON_NONE;
     // get the size of screen
-    Util::GetInstance()->GetScreenSize(screenWidth, screenHeight);
+    WuKongUtil::GetInstance()->GetScreenSize(screenWidth, screenHeight);
     // generate random point on the screen
     int xClickPosition = rand() % screenWidth;
     int yClickPosition = rand() % screenHeight;
@@ -50,7 +50,7 @@ ErrCode MouseInput::RandomInput()
         mouseType = MMI::PointerEvent::MOUSE_BUTTON_LEFT;
     }
     INFO_LOG_STR("Mouse: (%d, %d) Mouse Type: (%s)",
-                xClickPosition, yClickPosition, MouseTypeToString(mouseType).c_str());
+                 xClickPosition, yClickPosition, MouseTypeToString(mouseType).c_str());
     auto multiinput = MultimodeManager::GetInstance();
     result =
         multiinput->PointerInput(xClickPosition, yClickPosition, mouseType, MMI::PointerEvent::POINTER_ACTION_DOWN);

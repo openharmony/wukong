@@ -43,6 +43,5 @@ ErrCode SceneDelegate::GetSceneFindElementWay()
 {
     return OHOS::ERR_OK;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS

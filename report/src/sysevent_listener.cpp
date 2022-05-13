@@ -88,10 +88,6 @@ void SysEventListener::OnHandle(const std::string& domain, const std::string& ev
     }
     CsvUtils::WriteOneLine(csvFile, data);
 }
-void SysEventListener::OnServiceDied()
-{
-    ERROR_LOG("Listener service Died");
-}
-
+void SysEventListener::OnServiceDied() { ERROR_LOG("Listener service Died"); }
 }  // namespace WuKong
 }  // namespace OHOS

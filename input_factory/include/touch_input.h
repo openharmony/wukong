@@ -33,7 +33,6 @@ public:
     ErrCode RandomInput();
     ErrCode GetInputInfo();
 };
-
 }  // namespace WuKong
 }  // namespace OHOS
 #endif  // TEST_WUKONG_TOUCH_INPUT_H

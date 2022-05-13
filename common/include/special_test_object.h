@@ -17,6 +17,7 @@
 #define TEST_WUKONG_SPECAIL_TEST_OBJECT_H
 
 #include <string>
+#include <cstdio>
 
 namespace OHOS {
 namespace WuKong {
@@ -41,9 +42,9 @@ public:
         char buffer[50];
         int result = -1;
         if (isBack_) {
-            result = sprintf(buffer, "Swap: (%d, %d) -> (%d, %d)", endX_, endY_, startX_, startY_);
+            result = snprintf(buffer, sizeof(buffer), "Swap: (%d, %d) -> (%d, %d)", endX_, endY_, startX_, startY_);
         } else {
-            result = sprintf(buffer, "Swap: (%d, %d) -> (%d, %d)", startX_, startY_, endX_, endY_);
+            result = snprintf(buffer, sizeof(buffer), "Swap: (%d, %d) -> (%d, %d)", startX_, startY_, endX_, endY_);
         }
         if (result < 0) {
             return SpcialTestObject::toString();
@@ -64,7 +65,7 @@ public:
     virtual std::string toString()
     {
         char buffer[50];
-        int result = sprintf(buffer, "Point: (%d, %d)", x_, y_);
+        int result = snprintf(buffer, sizeof(buffer), "Point: (%d, %d)", x_, y_);
         if (result < 0) {
             return SpcialTestObject::toString();
         }

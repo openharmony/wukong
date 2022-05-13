@@ -20,7 +20,6 @@
 
 namespace OHOS {
 namespace WuKong {
-
 TouchInput::TouchInput() : InputAction() {}
 
 TouchInput::~TouchInput() {}
@@ -49,7 +48,7 @@ ErrCode TouchInput::RandomInput()
     ErrCode result = OHOS::ERR_OK;
     int32_t screenWidth = -1;
     int32_t screenHeight = -1;
-    Util::GetInstance()->GetScreenSize(screenWidth, screenHeight);
+    WuKongUtil::GetInstance()->GetScreenSize(screenWidth, screenHeight);
     int touchX = rand() % screenWidth;
     int touchY = rand() % screenHeight;
     auto multiinput = MultimodeManager::GetInstance();

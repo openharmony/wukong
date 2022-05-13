@@ -21,6 +21,7 @@
 #include "iservice_registry.h"
 #include "launcher_service.h"
 #include "string_ex.h"
+#include "wukong_define.h"
 
 namespace OHOS {
 namespace WuKong {
@@ -28,7 +29,7 @@ using namespace OHOS::Accessibility;
 using namespace std;
 const int userId = 100;
 
-Util::Util()
+WuKongUtil::WuKongUtil()
 {
     TRACK_LOG_STD();
     const int timeBufsize = 32;
@@ -48,12 +49,12 @@ Util::Util()
 /**
  * @brief: release util
  */
-Util::~Util()
+WuKongUtil::~WuKongUtil()
 {
     TRACK_LOG_STD();
 }
 
-ErrCode Util::GetAllAppInfo()
+ErrCode WuKongUtil::GetAllAppInfo()
 {
     AppExecFwk::LauncherService launcherservice;
     std::vector<AppExecFwk::LauncherAbilityInfo> launcherAbilityInfos;
@@ -63,8 +64,8 @@ ErrCode Util::GetAllAppInfo()
         // store the list of all bundle names
         bundleList_.push_back(bundleName);
         abilityList_.push_back(item.elementName.GetAbilityName());
-        int isInBlackList = FindElement(blackList_, bundleName);
-        if (isInBlackList != -1) {
+        int isInBlockList = FindElement(blockList_, bundleName);
+        if (isInBlockList != -1) {
             continue;
         }
         // store the list of bundle names except for block list
@@ -74,7 +75,7 @@ ErrCode Util::GetAllAppInfo()
     return OHOS::ERR_OK;
 }
 
-void Util::GetBundleList(std::vector<std::string> &bundlelist, std::vector<std::string> &abilitylist)
+void WuKongUtil::GetBundleList(std::vector<std::string> &bundlelist, std::vector<std::string> &abilitylist)
 {
     if (bundleList_.size() == 0) {
         GetAllAppInfo();
@@ -83,7 +84,7 @@ void Util::GetBundleList(std::vector<std::string> &bundlelist, std::vector<std::
     abilitylist = abilityList_;
 }
 
-int Util::FindElement(std::vector<std::string> bundleList, std::string key)
+int WuKongUtil::FindElement(std::vector<std::string> bundleList, std::string key)
 {
     auto it = find(bundleList.begin(), bundleList.end(), key);
     if (it != bundleList.end()) {
@@ -92,11 +93,11 @@ int Util::FindElement(std::vector<std::string> bundleList, std::string key)
     return -1;
 }
 
-ErrCode Util::CheckBundleNameList()
+ErrCode WuKongUtil::CheckBundleNameList()
 {
-    std::set<std::string> m(whiteList_.begin(), whiteList_.end());
+    std::set<std::string> m(allowList_.begin(), allowList_.end());
 
-    for (auto it = blackList_.begin(); it != blackList_.end(); it++) {
+    for (auto it = blockList_.begin(); it != blockList_.end(); it++) {
         if (m.find(*it) != m.end()) {
             ERROR_LOG("invalid param:please check params of '-p' and '-b'");
             return OHOS::ERR_INVALID_VALUE;
@@ -105,7 +106,7 @@ ErrCode Util::CheckBundleNameList()
     return OHOS::ERR_OK;
 }
 
-ErrCode Util::CheckArgumentList(std::vector<std::string> &arguments)
+ErrCode WuKongUtil::CheckArgumentList(std::vector<std::string> &arguments)
 {
     ErrCode result = OHOS::ERR_OK;
     GetAllAppInfo();
@@ -119,64 +120,64 @@ ErrCode Util::CheckArgumentList(std::vector<std::string> &arguments)
     return result;
 }
 
-ErrCode Util::SetWhiteList(const std::string &optarg)
+ErrCode WuKongUtil::SetAllowList(const std::string &optarg)
 {
     ErrCode result = OHOS::ERR_OK;
-    SplitStr(optarg, ",", whiteList_);
-    result = CheckArgumentList(whiteList_);
+    SplitStr(optarg, ",", allowList_);
+    result = CheckArgumentList(allowList_);
     if (result == OHOS::ERR_OK) {
         // delete repeat argument
-        DelRepeatArguments(whiteList_);
-        if (whiteList_.size() > 0) {
+        DelRepeatArguments(allowList_);
+        if (allowList_.size() > 0) {
             result = CheckBundleNameList();
         }
     }
     return result;
 }
 
-ErrCode Util::SetBlackList(const std::string &optarg)
+ErrCode WuKongUtil::SetBlockList(const std::string &optarg)
 {
     ErrCode result = OHOS::ERR_OK;
-    SplitStr(optarg, ",", blackList_);
-    result = CheckArgumentList(blackList_);
+    SplitStr(optarg, ",", blockList_);
+    result = CheckArgumentList(blockList_);
     if (result == OHOS::ERR_OK) {
         // delete repeat argument
-        DelRepeatArguments(blackList_);
-        if (blackList_.size() > 0) {
+        DelRepeatArguments(blockList_);
+        if (blockList_.size() > 0) {
             result = CheckBundleNameList();
         }
     }
     return result;
 }
 
-void Util::DelRepeatArguments(std::vector<std::string> &argumentlist)
+void WuKongUtil::DelRepeatArguments(std::vector<std::string> &argumentlist)
 {
     std::set<std::string> s(argumentlist.begin(), argumentlist.end());
     argumentlist.assign(s.begin(), s.end());
 }
 
-void Util::GetWhiteList(std::vector<std::string> &whiteList)
+void WuKongUtil::GetAllowList(std::vector<std::string> &allowList)
 {
-    whiteList = whiteList_;
+    allowList = allowList_;
 }
 
-void Util::GetBlackList(std::vector<std::string> &blackList)
+void WuKongUtil::GetBlockList(std::vector<std::string> &blockList)
 {
-    blackList = blackList_;
+    blockList = blockList_;
 }
 
-void Util::GetValidBundleList(std::vector<std::string> &validbundlelist)
+void WuKongUtil::GetValidBundleList(std::vector<std::string> &validbundlelist)
 {
     validbundlelist = validBundleList_;
 }
 
-void Util::SetAllAppInfo(std::vector<std::string> &bundleList, std::vector<std::string> &abilityList)
+void WuKongUtil::SetAllAppInfo(std::vector<std::string> &bundleList, std::vector<std::string> &abilityList)
 {
     bundleList_ = bundleList;
     abilityList_ = abilityList;
 }
 
-void Util::GetScreenSize(int32_t &width, int32_t &height)
+void WuKongUtil::GetScreenSize(int32_t &width, int32_t &height)
 {
     if (screenWidth_ == -1 || screenHeight_ == -1) {
         OHOS::Rosen::DisplayManager &displayMgr = OHOS::Rosen::DisplayManager::GetInstance();

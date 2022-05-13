@@ -23,6 +23,5 @@ ErrCode FilterCategory::FilterDetail()
 {
 	return OHOS::ERR_OK;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS

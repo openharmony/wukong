@@ -35,6 +35,7 @@
 #include "hisysevent_manager.h"
 #include "sysevent_listener.h"
 #include "wukong_util.h"
+#include "wukong_define.h"
 
 namespace OHOS {
 namespace WuKong {
@@ -63,7 +64,7 @@ bool InitCsvFile(std::ofstream &csvFile, std::string &filePath)
         return false;
     }
 
-    filePath = DEFAULT_DIR + "/wukong_" + Util::GetInstance()->GetStartRunTime() + ".csv";
+    filePath = DEFAULT_DIR + "/wukong_" + WuKongUtil::GetInstance()->GetStartRunTime() + ".csv";
     csvFile.open(filePath, std::ios_base::out | std::ios_base::trunc);
     if (!csvFile) {
         ERROR_LOG_STR("Failed to create csv file at: %s", filePath.c_str());

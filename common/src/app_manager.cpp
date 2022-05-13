@@ -19,6 +19,7 @@
 #include "app_log_wrapper.h"
 #include "element_name.h"
 #include "wukong_util.h"
+#include "wukong_define.h"
 
 namespace OHOS {
 namespace WuKong {
@@ -30,16 +31,16 @@ const std::string STRING_START_ABILITY_OK = "start ability successfully.";
 const std::string STRING_START_ABILITY_NG = "error: failed to start ability.";
 }  // namespace
 
-bool AppManager::BlackAbilityController::AllowAbilityStart(const AAFwk::Want &want, const std::string &bundleName)
+bool AppManager::BlockAbilityController::AllowAbilityStart(const AAFwk::Want &want, const std::string &bundleName)
 {
     TRACK_LOG_STD();
-    std::vector<std::string> blacklist;
-    Util::GetInstance()->GetBlackList(blacklist);
+    std::vector<std::string> blocklist;
+    WuKongUtil::GetInstance()->GetBlockList(blocklist);
     DEBUG_LOG_STR("BundleName: %s", bundleName.c_str());
 
     // if bundleName in the block list to unallow ability start.
-    auto it = find(blacklist.begin(), blacklist.end(), bundleName);
-    if (it != blacklist.end()) {
+    auto it = find(blocklist.begin(), blocklist.end(), bundleName);
+    if (it != blocklist.end()) {
         DEBUG_LOG("bundle start prohibition");
         return false;
     }
@@ -48,7 +49,7 @@ bool AppManager::BlackAbilityController::AllowAbilityStart(const AAFwk::Want &wa
 }
 
 // turn to background
-bool AppManager::BlackAbilityController::AllowAbilityBackground(const std::string &bundleName)
+bool AppManager::BlockAbilityController::AllowAbilityBackground(const std::string &bundleName)
 {
     return false;
 }
@@ -85,7 +86,7 @@ ErrCode AppManager::StartAbilityByBundleInfo(std::string abilityName, std::strin
 void AppManager::SetAbilityController()
 {
     if (abilityController_ == nullptr) {
-        abilityController_ = new (std::nothrow) BlackAbilityController();
+        abilityController_ = new (std::nothrow) BlockAbilityController();
     }
     OHOS::AAFwk::AbilityManagerClient::GetInstance()->SetAbilityController(abilityController_, true);
 }

@@ -21,8 +21,7 @@ FormatTerminal::FormatTerminal() : Format() {}
 FormatTerminal::~FormatTerminal() {}
 ErrCode FormatTerminal::FormatDetail()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS

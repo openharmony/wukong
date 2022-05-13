@@ -23,6 +23,5 @@ ErrCode StatisticsCoverage::StatisticsDetail()
 {
     return ERR_OK;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS

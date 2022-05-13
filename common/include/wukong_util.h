@@ -16,13 +16,15 @@
 #define TEST_WUKONG_UTIL_H
 
 #include <unistd.h>
+#include <string>
+#include <vector>
 
 #include "singleton.h"
-#include "wukong_define.h"
+#include "errors.h"
 
 namespace OHOS {
 namespace WuKong {
-class Util : public DelayedSingleton<Util> {
+class WuKongUtil : public DelayedSingleton<WuKongUtil> {
 public:
     /**
      * @brief Get the All App Info object
@@ -39,30 +41,30 @@ public:
     int FindElement(std::vector<std::string> bundleList, std::string key);
 
     /**
-     * @brief Set the White List.
+     * @brief Set the Allow List.
      * @param optarg commmand string
      * @return Return ERR_OK on success, others on failure.
      */
-    ErrCode SetWhiteList(const std::string &optarg);
+    ErrCode SetAllowList(const std::string &optarg);
 
     /**
-     * @brief Set the Black List.
+     * @brief Set the Block List.
      * @param optarg command string.
      * @return Return ERR_OK on success, others on failure.
      */
-    ErrCode SetBlackList(const std::string &optarg);
+    ErrCode SetBlockList(const std::string &optarg);
 
     /**
-     * @brief Get the White List of the test.
-     * @param bundleNameArgs the white list.
+     * @brief Get the Allow List of the test.
+     * @param bundleNameArgs the Allow list.
      */
-    void GetWhiteList(std::vector<std::string> &whitelist);
+    void GetAllowList(std::vector<std::string> &Allowlist);
 
     /**
      * @brief Get the block List of the test.
      * @param blockList the block list.
      */
-    void GetBlackList(std::vector<std::string> & blockList);
+    void GetBlockList(std::vector<std::string> & blockList);
 
     /**
      * @brief get the bundlelist and ability list.
@@ -100,7 +102,7 @@ public:
         return startRunTime_;
     }
 
-    DECLARE_DELAYED_SINGLETON(Util);
+    DECLARE_DELAYED_SINGLETON(WuKongUtil);
 
 private:
     /**
@@ -110,7 +112,7 @@ private:
     void DelRepeatArguments(std::vector<std::string> &argumentlist);
 
     /**
-     * @brief Check if there is a conflict between the black and white lists
+     * @brief Check if there is a conflict between the block and Allow lists
      * @return Return ERR_OK no conflict, others have conflict.
      */
     ErrCode CheckBundleNameList();
@@ -126,13 +128,12 @@ private:
     std::vector<std::string> abilityList_;
     std::vector<std::string> validBundleList_;
     std::vector<std::string> validAbilityList_;
-    std::vector<std::string> whiteList_;
-    std::vector<std::string> blackList_;
+    std::vector<std::string> allowList_;
+    std::vector<std::string> blockList_;
     int32_t screenWidth_ = -1;
     int32_t screenHeight_ = -1;
     std::string startRunTime_;
 };
-
 }  // namespace WuKong
 }  // namespace OHOS
 #endif  // TEST_WUKONG_UTIL_H

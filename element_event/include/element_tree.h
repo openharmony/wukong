@@ -37,7 +37,6 @@ public:
 private:
     int64_t componentId_ = 0;
 };
-
 }  // namespace WuKong
 }  // namespace OHOS
 #endif  // TEST_WUKONG_ELEMENT_TREE_H

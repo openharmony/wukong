@@ -19,7 +19,6 @@
 #include "wukong_define.h"
 
 namespace OHOS {
-
 namespace WuKong {
 class NormalScene {
 public:

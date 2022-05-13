@@ -22,33 +22,32 @@ DataUnitSet::~DataUnitSet() {}
 
 ErrCode DataUnitSet::FilterDataUnit()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 
 ErrCode DataUnitSet::SetFilterStragety()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 
 ErrCode DataUnitSet::FormatDataUnit()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 
 ErrCode DataUnitSet::SetFormatStragety()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 
 ErrCode DataUnitSet::StatisticsDataUnit()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
 
 ErrCode DataUnitSet::SetStatisticsStragety()
 {
-	return OHOS::ERR_OK;
+    return OHOS::ERR_OK;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS

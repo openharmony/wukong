@@ -33,7 +33,7 @@ public:
     void SetAbilityController();
 
 private:
-    class BlackAbilityController : public OHOS::AppExecFwk::AbilityControllerStub {
+    class BlockAbilityController : public OHOS::AppExecFwk::AbilityControllerStub {
     public:
         /**
          * @brief cold start.
@@ -54,8 +54,8 @@ private:
         std::vector<std::string> AllowBundleList;
     };
 
-    // black ability controller
-    sptr<BlackAbilityController> abilityController_;
+    // block ability controller
+    sptr<BlockAbilityController> abilityController_;
 };
 }  // namespace WuKong
 }  // namespace OHOS

@@ -56,7 +56,7 @@ ErrCode SwapInput::RandomInput()
     ErrCode result = OHOS::ERR_OK;
     int32_t screenWidth = -1;
     int32_t screenHeight = -1;
-    Util::GetInstance()->GetScreenSize(screenWidth, screenHeight);
+    WuKongUtil::GetInstance()->GetScreenSize(screenWidth, screenHeight);
     int xSrcPosition = rand() % screenWidth;
     int ySrcPosition = rand() % screenHeight;
     int xDstPosition = rand() % screenWidth;
@@ -70,6 +70,5 @@ ErrCode SwapInput::GetInputInfo()
 {
     return OHOS::ERR_OK;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS

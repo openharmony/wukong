@@ -24,7 +24,6 @@
 #include "exception_manager.h"
 namespace OHOS {
 namespace WuKong {
-
 Report &Report::GetInstance()
 {
     static Report instance;
@@ -42,6 +41,5 @@ ErrCode Report::Finish()
     ExceptionManager::GetInstance()->StopCatching();
     return OHOS::ERR_OK;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS
