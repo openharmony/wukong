@@ -205,10 +205,9 @@ ErrCode SpecialTestFlow::HandleNormalOption(const int option)
             break;
         }
         case 'c':
-		case 'T': {
+        case 'T':
             CheckArgument(option);
             break;
-        }
         case 'h': {
             shellcommand_.ResultReceiverAppend(SPECIAL_TEST_HELP_MSG);
             result = ERR_NO_INIT;

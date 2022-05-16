@@ -35,15 +35,13 @@ WuKongUtil::WuKongUtil()
     const int timeBufsize = 32;
     char fileNameBuf[timeBufsize] = {0};
     time_t currentTime = time(0);
-	int res = 0;
-	if (currentTime != NULL)
-	{
-		tm *timePtr = localtime(&currentTime);
-		if (timePtr != NULL)
-		{
-			res = strftime(fileNameBuf, timeBufsize, "%Y%m%d_%H%M%S", localtime(&currentTime));
-		}
-	}
+    int res = 0;
+    if (currentTime != NULL) {
+        tm *timePtr = localtime(&currentTime);
+        if (timePtr != NULL) {
+            res = strftime(fileNameBuf, timeBufsize, "%Y%m%d_%H%M%S", timePtr);
+        }
+    }
     if (res > 0) {
         startRunTime_ = std::string(fileNameBuf);
     } else {
