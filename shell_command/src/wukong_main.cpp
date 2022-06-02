@@ -38,7 +38,7 @@ static void WuKongMutexFile()
     }
 }
 
-static void InitSemaphore(NamedSemaphore& sem, const int count)
+static void InitSemaphore(WukongSemaphore& sem, const int count)
 {
     bool res = sem.Open();
     int value = 0;
@@ -50,8 +50,12 @@ static void InitSemaphore(NamedSemaphore& sem, const int count)
         DEBUG_LOG("Open Semaphore success");
         value = sem.GetValue();
         if (value > count) {
-            DEBUG_LOG_STR("the semaphore value is unvalid (%d), and reopen Semaphore", value);
+            DEBUG_LOG_STR("the semaphore value is invalid (%d), and reopen Semaphore", value);
             res = sem.Create();
+            if (!res) {
+                ERROR_LOG("creat sem failed");
+                return;
+            }
         } else {
             DEBUG_LOG_STR("Semaphore Value: (%d)", value);
         }
@@ -59,7 +63,7 @@ static void InitSemaphore(NamedSemaphore& sem, const int count)
     sem.Close();
 }
 
-static bool IsRunning(NamedSemaphore& sem)
+static bool IsRunning(WukongSemaphore& sem)
 {
     bool result = false;
     sem.Open();
@@ -123,9 +127,9 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    NamedSemaphore semRun(SEMPHORE_RUN_NAME, 1);
+    WukongSemaphore semRun(SEMPHORE_RUN_NAME, 1);
     InitSemaphore(semRun, 1);
-    NamedSemaphore semStop(SEMPHORE_STOP_NAME, 1);
+    WukongSemaphore semStop(SEMPHORE_STOP_NAME, 1);
     InitSemaphore(semStop, 1);
 
     if (isStop) {

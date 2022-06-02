@@ -14,32 +14,70 @@
  */
 
 #include "appswitch_input.h"
+
+#include "input_info.h"
 #include "input_manager.h"
 #include "wukong_define.h"
-
 namespace OHOS {
 namespace WuKong {
-AppswitchInput::AppswitchInput() : InputAction() {}
+namespace {
+const uint32_t INVALIDVALUE = 0xFFFFFFFF;
+}
+AppswitchInput::AppswitchInput() : InputAction()
+{
+}
 
-AppswitchInput::~AppswitchInput() {}
+AppswitchInput::~AppswitchInput()
+{
+}
+
+ErrCode AppswitchInput::OrderInput(std::shared_ptr<SpcialTestObject>& specialTestObject)
+{
+    ErrCode result = OHOS::ERR_OK;
+    AppSwitchParam* appSwitchPtr = (AppSwitchParam*)specialTestObject.get();
+    if (appSwitchPtr == nullptr) {
+        return OHOS::ERR_INVALID_VALUE;
+    }
+    std::string bundlename = appSwitchPtr->bundlename_;
+    std::vector<std::string> bundleList;
+    std::vector<std::string> abilityList;
+    auto util = WuKongUtil::GetInstance();
+    util->GetBundleList(bundleList, abilityList);
+    uint32_t index = util->FindElement(bundleList, bundlename);
+    if (index == INVALIDVALUE) {
+        ERROR_LOG("not found bundle");
+        return OHOS::ERR_INVALID_VALUE;
+    }
+    // start ability through bundle information
+    result = AppManager::GetInstance()->StartAbilityByBundleInfo(abilityList[index], bundleList[index]);
+    // print the result of start event
+    PrintResultOfStartAbility(result, index);
+    return result;
+}
 
 ErrCode AppswitchInput::RandomInput()
 {
     ErrCode result = OHOS::ERR_OK;
     std::vector<std::string> bundleList;
     std::vector<std::string> abilityList;
-    int index = -1;
     WuKongUtil::GetInstance()->GetBundleList(bundleList, abilityList);
-    index = GetAbilityIndex(bundleList);
+    uint32_t index = GetAbilityIndex(bundleList);
+    if (index == INVALIDVALUE) {
+        ERROR_LOG("not found bundle");
+        return OHOS::ERR_INVALID_VALUE;
+    }
     // start ability through bundle information
     result = AppManager::GetInstance()->StartAbilityByBundleInfo(abilityList[index], bundleList[index]);
     // print the result of start event
     PrintResultOfStartAbility(result, index);
-
+    std::shared_ptr<InputInfo> inputInfo = InputInfo::GetInstance();
+    inputInfo->SetBundleName(bundleList[index]);
+    inputInfo->SetAbilityName(abilityList[index]);
+    inputInfo->SetInputType(INPUTTYPE_APPSWITCHINPUT);
     return result;
 }
 
-ErrCode AppswitchInput::PrintResultOfStartAbility(const ErrCode result, int index)
+ErrCode AppswitchInput::PrintResultOfStartAbility(const ErrCode result, uint32_t index)
 {
     std::vector<std::string> bundleList;
     std::vector<std::string> abilityList;
@@ -57,9 +95,9 @@ ErrCode AppswitchInput::GetInputInfo()
     return OHOS::ERR_OK;
 }
 
-int AppswitchInput::GetAbilityIndex(std::vector<std::string> &bundlelist)
+uint32_t AppswitchInput::GetAbilityIndex(std::vector<std::string> &bundlelist)
 {
-    int index = -1;
+    uint32_t index = INVALIDVALUE;
     std::vector<std::string> allowlist;
     std::vector<std::string> validlist;
     WuKongUtil::GetInstance()->GetAllowList(allowlist);

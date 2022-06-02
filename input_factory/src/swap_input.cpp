@@ -14,15 +14,21 @@
  */
 
 #include "swap_input.h"
+
+#include "input_info.h"
 #include "input_manager.h"
 #include "multimode_manager.h"
 #include "wukong_define.h"
 
 namespace OHOS {
 namespace WuKong {
-SwapInput::SwapInput() : InputAction() {}
+SwapInput::SwapInput() : InputAction()
+{
+}
 
-SwapInput::~SwapInput() {}
+SwapInput::~SwapInput()
+{
+}
 
 ErrCode SwapInput::OrderInput(std::shared_ptr<SpcialTestObject>& specialTestObject)
 {
@@ -56,13 +62,21 @@ ErrCode SwapInput::RandomInput()
     ErrCode result = OHOS::ERR_OK;
     int32_t screenWidth = -1;
     int32_t screenHeight = -1;
-    WuKongUtil::GetInstance()->GetScreenSize(screenWidth, screenHeight);
+    result = WuKongUtil::GetInstance()->GetScreenSize(screenWidth, screenHeight);
+    if (result != OHOS::ERR_OK) {
+        return result;
+    }
     int xSrcPosition = rand() % screenWidth;
     int ySrcPosition = rand() % screenHeight;
     int xDstPosition = rand() % screenWidth;
     int yDstPosition = rand() % screenHeight;
     INFO_LOG_STR("Swap: (%d, %d) -> (%d, %d)", xSrcPosition, ySrcPosition, xDstPosition, yDstPosition);
     result = MultimodeManager::GetInstance()->IntervalSwap(xSrcPosition, ySrcPosition, xDstPosition, yDstPosition);
+    if (result != OHOS::ERR_OK) {
+        return result;
+    }
+    std::shared_ptr<InputInfo> inputInfo = InputInfo::GetInstance();
+    inputInfo->SetInputType(INPUTTYPE_SWAPINPUT);
     return result;
 }
 

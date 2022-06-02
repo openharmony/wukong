@@ -20,10 +20,16 @@
 #include <vector>
 
 #include "errors.h"
+#include "semaphore_ex.h"
 #include "singleton.h"
 
 namespace OHOS {
 namespace WuKong {
+/**
+ * @brief reference the NamedSemaphore for the process lock function
+ */
+typedef NamedSemaphore WukongSemaphore;
+
 class WuKongUtil : public DelayedSingleton<WuKongUtil> {
 public:
     /**
@@ -38,7 +44,7 @@ public:
      * @param key the key subscript in the bundle list.
      * @return tthe location of the key bundle in the bundlelist.
      */
-    int FindElement(std::vector<std::string> bundleList, std::string key);
+    uint32_t FindElement(std::vector<std::string> bundleList, std::string key);
 
     /**
      * @brief Set the Allow List.
@@ -90,8 +96,15 @@ public:
      * @brief get the size of screen.
      * @param width the width of screen.
      * @param height the height of screen.
+     * @return Return ERR_OK on success, others on failure.
      */
-    void GetScreenSize(int32_t &width, int32_t &height);
+    ErrCode GetScreenSize(int32_t &width, int32_t &height);
+
+    /**
+     * @brief get the icon path of app.
+     * @param iconpath icon path of app.
+     */
+    void GetIconPath(std::string &iconpath);
 
     /**
      * @brief get start run time string for report, log etc.
@@ -124,74 +137,19 @@ private:
      */
     ErrCode CheckArgumentList(std::vector<std::string> &arguments);
 
+    std::string iconPath_;
     std::vector<std::string> bundleList_;
     std::vector<std::string> abilityList_;
     std::vector<std::string> validBundleList_;
     std::vector<std::string> validAbilityList_;
     std::vector<std::string> allowList_;
-    std::vector<std::string> blockList_;
+    std::vector<std::string> blockList_ = {"com.ohos.devicemanagerui", "com.ohos.screenlock",
+                                           "com.ohos.permissionmanager"};
     int32_t screenWidth_ = -1;
     int32_t screenHeight_ = -1;
+
     std::string startRunTime_;
 };
-
-class WukongSemaphore {
-public:
-    WukongSemaphore(const std::string &name, size_t size) : name_(name)
-    {
-        maxCount_ = 0;
-    }
-    ~WukongSemaphore()
-    {
-    }
-
-    bool Create()
-    {
-        return true;
-    }
-    bool Unlink()
-    {
-        return true;
-    }
-
-    bool Open()
-    {
-        return true;
-    }
-    bool Close()
-    {
-        return true;
-    }
-
-    bool Wait()
-    {
-        return true;
-    }
-    bool TryWait()
-    {
-        return true;
-    }
-    bool TimedWait(const struct timespec &ts)
-    {
-        return true;
-    }
-    bool Post()
-    {
-        return true;
-    }
-
-    int GetValue() const
-    {
-        return maxCount_;
-    }
-
-private:
-    std::string name_;
-    int maxCount_;
-};
-
-typedef WukongSemaphore NamedSemaphore;
-
 }  // namespace WuKong
 }  // namespace OHOS
 #endif  // TEST_WUKONG_UTIL_H
