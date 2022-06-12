@@ -15,147 +15,170 @@
 
 #include "statistics_componment.h"
 
+#include <algorithm>
+#include <iomanip>
+#include <iostream>
 #include <sstream>
+#include <stdlib.h>
 
 namespace OHOS {
 namespace WuKong {
-using namespace std;
-const int NUMBER_TWO = 2;
-const float ONE_HUNDRED_PERCENT = 100;
+namespace {
+const uint32_t DECIMAL_LENGTH = 2;
+const float PERCENTAGE = 100.0;
+}
 
-void StatisticsComponment::StatisticsDetail
-                            (vector<map<string, string>> srcDatas,
-                             map<string, shared_ptr<Table>> &destTables)
+void StatisticsComponment::StatisticsDetail(std::vector<std::map<std::string, std::string>> srcDatas,
+                                            std::map<std::string, std::shared_ptr<Table>> &destTables)
 {
-    if (!SrcDatasPreprocessing(srcDatas)) {
-        return;
-    }
-    string app, componment;
-    multimap<string, string> appRecord;
-    stringstream bufferStream;
-
-    for (appsIter_ = apps_.begin(); appsIter_ != apps_.end(); appsIter_++) {
-        // check app is record in appContainer
-        appContainerIter_ = appContainer_.find(*appsIter_);
-        if (appContainerIter_ == appContainer_.end()) {
-            break;
-        }
-        app = (*appsIter_);
-        appRecord = appContainer_[app];
-        map<string, vector<string>> componmentItems;
-        // check whether the current type has established a statistical relationship
-        if (tablesItems_.count(app) != 0) {
-            componmentItems = tablesItems_[app];
-        }
-        int countExecTimes = appRecord.size();
-        int countInputedTimes = 0, countExpectInputTimes = 0;
-        vector<string> line;
-        // record eventType,execTimes,proportion,inputedTimes,ExpectInputTimes,coverage
-        for (componmentsIter_ = componments_.begin(); componmentsIter_ != componments_.end(); componmentsIter_++) {
-            std::map<std::string, std::vector<std::string>> componmentsOfApp;
-
-            componmentsOfApp = coverages_[app];
-            if (componmentsOfApp.count(*componmentsIter_) == 0) {
-                continue;
-            }
-            line.push_back(*componmentsIter_);
-            int execTimes = 0;
-            if (componmentItems.count(*componmentsIter_) != 0) {
-                line = componmentItems[*componmentsIter_];
-                execTimes += atoi(line.at(0).c_str());
-            }
-            execTimes += appRecord.count(*componmentsIter_);
-            line.push_back(to_string(execTimes));
-            if (countExecTimes <= 0 && execTimes <= 0)
-            {
-                ERROR_LOG("statistics error.");
-                return;
-            }
-                float proportion = (execTimes * ONE_HUNDRED_PERCENT) / countExecTimes;
-            bufferStream.str("");
-            bufferStream << setiosflags(ios::fixed) << setprecision(NUMBER_TWO) << proportion;
-            string proportionStr = bufferStream.str() + "%";
-            line.push_back(proportionStr);
-            std::map<std::string, std::vector<std::string>> tmpInput;
-            int inputedTimes = atoi((coverages_[app][*componmentsIter_]).at(0).c_str());
-            countInputedTimes += inputedTimes;
-            line.push_back(to_string(inputedTimes));
-            int ExpectInputTimes = atoi(coverages_[app][*componmentsIter_].at(1).c_str());
-            countExpectInputTimes += ExpectInputTimes;
-            line.push_back(to_string(ExpectInputTimes));
-            if (ExpectInputTimes != 0) {
-                float coverage = (inputedTimes * ONE_HUNDRED_PERCENT) / ExpectInputTimes;
-            bufferStream.str("");
-            bufferStream << setiosflags(ios::fixed) << setprecision(NUMBER_TWO) << coverage;
-            }
-            string coverageStr = bufferStream.str() + "%";
-            line.push_back(coverageStr);
+    SrcDatasPretreatment(srcDatas);
+    // loop bundle stroe componment statistics msg
+    for (auto bundle : componmentStatisticsMsg_) {
+        DEBUG_LOG_STR("start bundlename{%s}", bundle.first.c_str());
+        std::shared_ptr<ComponmentStatisticsMsg> curComponmentStatisticsMsgPtr = bundle.second;
+        uint32_t curComonmentTypeLength = curComponmentStatisticsMsgPtr->componmentTypes_.size();
+        std::vector<std::string> line;
+        std::shared_ptr<ComponmentStatisticsRecord> curComponmentStatisticsRecordPtr = nullptr;
+        std::shared_ptr<ComponmentStatisticsRecord> curBundleAllStatisticsPtr =
+            std::make_shared<ComponmentStatisticsRecord>();
+        curBundleAllStatisticsPtr->componmentType_ = "total";
+        for (uint32_t i = 0; i < curComonmentTypeLength; i++) {
+            curComponmentStatisticsRecordPtr = curComponmentStatisticsMsgPtr->componmentTypeRecord_[i];
+            UpdateLine(curComponmentStatisticsRecordPtr, curComponmentStatisticsMsgPtr->componmentTypeTotal_, line);
             record_.push_back(line);
-            line.clear();
+            curBundleAllStatisticsPtr->execTimes_ += curComponmentStatisticsRecordPtr->execTimes_;
+            curBundleAllStatisticsPtr->inputedTimes_ += curComponmentStatisticsRecordPtr->inputedTimes_;
+            curBundleAllStatisticsPtr->expectInputTimes_ += curComponmentStatisticsRecordPtr->expectInputTimes_;
         }
-        float totalCoverage = (countInputedTimes * 100.0) / countExpectInputTimes;
-        bufferStream.str("");
-        bufferStream << setiosflags(ios::fixed) << setprecision(NUMBER_TWO) << totalCoverage;
-        string totalCoverageStr = bufferStream.str() + "%";
-        line = {"total",
-                to_string(countExecTimes),
-                "100%",
-                to_string(countInputedTimes),
-                to_string(countExpectInputTimes),
-                totalCoverageStr};
+
+        UpdateLine(curBundleAllStatisticsPtr, curComponmentStatisticsMsgPtr->componmentTypeTotal_, line);
         record_.push_back(line);
-        shared_ptr<Table> table = make_shared<Table>(headers_, record_);
+        std::shared_ptr<Table> table = std::make_shared<Table>(headers_, record_);
+        table->SetName(bundle.first);
+        table->SetDetail("componment");
+        destTables[bundle.first] = table;
         record_.clear();
-        table->SetName(app);
-        table->SetDetail("componmentStatistics");
-        destTables[app] = table;
     }
-    appContainer_.clear();
+
+    GlobalComponmentTypeStatistics();
+    std::shared_ptr<Table> globalTable = std::make_shared<Table>(headers_, record_);
+    globalTable->SetName("all");
+    globalTable->SetDetail("componment");
+    destTables["all"] = globalTable;
     record_.clear();
 }
 
-bool StatisticsComponment::SrcDatasPreprocessing(std::vector<std::map<std::string, std::string>> srcDatas)
+void StatisticsComponment::SrcDatasPretreatment(std::vector<std::map<std::string, std::string>> srcDatas)
 {
-    string app, componment;
-    multimap<string, string> appRecord;
-    appContainerIter_ = appContainer_.begin();
-    vector<map<string, string>>::iterator srcDatasIter;
-    for (srcDatasIter = srcDatas.begin(); srcDatasIter != srcDatas.end(); srcDatasIter++) {
-        // check bundle name
-        if (srcDatasIter->count("bundleName") == 0) {
-            return false;
+    for (auto srcData : srcDatas) {
+        DEBUG_LOG_STR("bundlename{%s} | componment{%s} | inputedTimes{%s} | componmentTotals{%s}",
+                      srcData["bundleName"].c_str(), srcData["componment"].c_str(), srcData["inputedTimes"].c_str(),
+                      srcData["componmentTotals"].c_str());
+        std::vector<std::string>::iterator globalComponmentTypesIter =
+            find(globalComponmentTypes_.begin(), globalComponmentTypes_.end(), srcData["componment"]);
+        if (globalComponmentTypesIter == globalComponmentTypes_.end()) {
+            DEBUG_LOG_STR("push componment{%s} to globalComponmentTypes_", srcData["componment"].c_str());
+            globalComponmentTypes_.push_back(srcData["componment"]);
         }
-        app = (*srcDatasIter)["bundleName"];
-        // check app is insert apps
-        appsIter_ = find(apps_.begin(), apps_.end(), app);
-        if (appsIter_ == apps_.end()) {
-            apps_.push_back(app);
-        }
-        // check appContainer is insert app,get app map record
-        appContainerIter_ = appContainer_.find(app);
-        if (appContainerIter_ != appContainer_.end()) {
-            appRecord = appContainerIter_->second;
-        }
-        // check componment
-        if (srcDatasIter->count("componment") == 0) {
-            return false;
-        }
-        componment = (*srcDatasIter)["componment"];
-        vector<string> coveratgeDetail;
-        coveratgeDetail.push_back((*srcDatasIter)["inputedTimes"]);
-        coveratgeDetail.push_back((*srcDatasIter)["componmentTotals"]);
-        coverages_[app][componment] = coveratgeDetail;
-        appRecord.insert({componment, "componment" });
-        appContainer_[app] = appRecord;
-        componmentsIter_ = find(componments_.begin(), componments_.end(), componment);
-        if (componmentsIter_ == componments_.end()) {
-            componments_.push_back(componment);
-        }
-        execCount_++;
-        appRecord.clear();
-    }
 
-    return true;
+        // check whether bundle is entered resolve create or reuse already exist  StatisticsMsgPtr
+        std::shared_ptr<ComponmentStatisticsMsg> curStatisticsMsgPtr = std::make_shared<ComponmentStatisticsMsg>();
+        std::map<std::string, std::shared_ptr<ComponmentStatisticsMsg>>::iterator componmentStatisticsMsgIter =
+            componmentStatisticsMsg_.find(srcData["bundleName"]);
+        if (componmentStatisticsMsgIter != componmentStatisticsMsg_.end()) {
+            DEBUG_LOG_STR("use inited curStatisticsMsgPtr by bundleName{%s}", srcData["bundleName"].c_str());
+            curStatisticsMsgPtr = componmentStatisticsMsg_[srcData["bundleName"]];
+        }
+        // check whether componmentType is entered resolve create or reuse already exist ComponmentStatisticsRecordPtr
+        std::shared_ptr<ComponmentStatisticsRecord> curComponmentStatisticsRecordPtr =
+            std::make_shared<ComponmentStatisticsRecord>();
+        uint32_t index = curStatisticsMsgPtr->ComponmentTypesIndex(srcData["componment"]);
+        uint32_t curComponmentTypeTotal = curStatisticsMsgPtr->componmentTypeTotal_;
+        if (index != curStatisticsMsgPtr->componmentTypes_.size()) {
+            curComponmentStatisticsRecordPtr = curStatisticsMsgPtr->componmentTypeRecord_[index];
+            DEBUG_LOG_STR("use inited curComponmentStatisticsRecordPtr in index{%d} | componment{%s}", index,
+                          srcData["componment"].c_str());
+        }
+        // update record msg
+        curComponmentStatisticsRecordPtr->componmentType_ = srcData["componment"];
+        curComponmentStatisticsRecordPtr->execTimes_++;
+        curComponmentStatisticsRecordPtr->inputedTimes_ = (unsigned int)atoi(srcData["inputedTimes"].c_str());
+        curComponmentStatisticsRecordPtr->expectInputTimes_ = (unsigned int)atoi(srcData["componmentTotals"].c_str());
+
+        if (curStatisticsMsgPtr->componmentTypeRecord_.size() > index) {
+            curStatisticsMsgPtr->componmentTypeRecord_[index] = curComponmentStatisticsRecordPtr;
+            curStatisticsMsgPtr->componmentTypes_[index] = srcData["componment"];
+        } else {
+            curStatisticsMsgPtr->componmentTypeRecord_.push_back(curComponmentStatisticsRecordPtr);
+            curStatisticsMsgPtr->componmentTypes_.push_back(srcData["componment"]);
+        }
+
+        curComponmentTypeTotal++;
+        DEBUG_LOG_STR("curComponmentTypeTotal{%d}", curComponmentTypeTotal);
+        curStatisticsMsgPtr->componmentTypeTotal_ = curComponmentTypeTotal;
+        componmentStatisticsMsg_[srcData["bundleName"]] = curStatisticsMsgPtr;
+        execCount_++;
+    }
+}
+
+void StatisticsComponment::UpdateLine(std::shared_ptr<ComponmentStatisticsRecord> ComponmentStatisticsRecordPtr,
+                                      unsigned int componmentTypeTotal, std::vector<std::string> &line)
+{
+    std::stringstream bufferStream;
+    std::string curComponmentType = ComponmentStatisticsRecordPtr->componmentType_;
+    std::string curExecTimes = std::to_string(ComponmentStatisticsRecordPtr->execTimes_);
+    std::string curProportionStr = "";
+    std::string curInputedTimes = std::to_string(ComponmentStatisticsRecordPtr->inputedTimes_);
+    std::string curExpectInputTimes = std::to_string(ComponmentStatisticsRecordPtr->expectInputTimes_);
+    std::string curCoverageStr = "";
+    if (componmentTypeTotal > 0) {
+        float proportion = (ComponmentStatisticsRecordPtr->execTimes_ * PERCENTAGE) / componmentTypeTotal;
+        bufferStream.str("");
+        bufferStream << std::setiosflags(std::ios::fixed) << std::setprecision(2) << proportion;
+        curProportionStr = bufferStream.str() + "%";
+    }
+    if (ComponmentStatisticsRecordPtr->expectInputTimes_ > 0) {
+        float coverage =
+            (ComponmentStatisticsRecordPtr->inputedTimes_ * PERCENTAGE) / ComponmentStatisticsRecordPtr->expectInputTimes_;
+        bufferStream.str("");
+        bufferStream << std::setiosflags(std::ios::fixed) << std::setprecision(DECIMAL_LENGTH) << coverage;
+        curCoverageStr = bufferStream.str() + "%";
+    }
+    DEBUG_LOG_STR(
+        "line content curComponmentType{%s} | curExecTimes{%s} | curProportionStr{%s} | curInputedTimes{%s} | "
+        "curExpectInputTimes{%s} | curCoverageStr{%s}",
+        curComponmentType.c_str(), curExecTimes.c_str(), curProportionStr.c_str(), curInputedTimes.c_str(),
+        curExpectInputTimes.c_str(), curCoverageStr.c_str());
+    line = {curComponmentType, curExecTimes, curProportionStr, curInputedTimes, curExpectInputTimes, curCoverageStr};
+}
+
+void StatisticsComponment::GlobalComponmentTypeStatistics()
+{
+    std::vector<std::string> line;
+    std::shared_ptr<ComponmentStatisticsRecord> globalAllStatisticsPtr = std::make_shared<ComponmentStatisticsRecord>();
+    globalAllStatisticsPtr->componmentType_ = "total";
+    for (auto comonmentType : globalComponmentTypes_) {
+        std::shared_ptr<ComponmentStatisticsRecord> componmentTypeRecordPtr = std::make_shared<ComponmentStatisticsRecord>();
+        componmentTypeRecordPtr->componmentType_ = comonmentType;
+        for (auto bundle : componmentStatisticsMsg_) {
+            std::shared_ptr<ComponmentStatisticsMsg> curComponmentStatisticsMsgPtr = bundle.second;
+            uint32_t index = curComponmentStatisticsMsgPtr->ComponmentTypesIndex(comonmentType);
+            if (curComponmentStatisticsMsgPtr->componmentTypeRecord_.size() > index) {
+                std::shared_ptr<ComponmentStatisticsRecord> curComponmentStatisticsRecordPtr =
+                    curComponmentStatisticsMsgPtr->componmentTypeRecord_[index];
+                componmentTypeRecordPtr->execTimes_ += curComponmentStatisticsRecordPtr->execTimes_;
+                componmentTypeRecordPtr->inputedTimes_ += curComponmentStatisticsRecordPtr->inputedTimes_;
+                componmentTypeRecordPtr->expectInputTimes_ += curComponmentStatisticsRecordPtr->expectInputTimes_;
+            }
+        }
+        globalAllStatisticsPtr->execTimes_ += componmentTypeRecordPtr->execTimes_;
+        globalAllStatisticsPtr->inputedTimes_ += componmentTypeRecordPtr->inputedTimes_;
+        globalAllStatisticsPtr->expectInputTimes_ += componmentTypeRecordPtr->expectInputTimes_;
+        UpdateLine(componmentTypeRecordPtr, execCount_, line);
+        record_.push_back(line);
+    }
+    UpdateLine(globalAllStatisticsPtr, execCount_, line);
+    record_.push_back(line);
 }
 }  // namespace WuKong
 }  // namespace OHOS

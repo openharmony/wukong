@@ -24,7 +24,6 @@
 #define TEST_WUKONG_SYSEVENT_LISTENER_H
 
 #include "hisysevent_subscribe_callback.h"
-
 namespace OHOS {
 namespace WuKong {
 class SysEventListener : public OHOS::HiviewDFX::HiSysEventSubscribeCallBack {
@@ -41,6 +40,7 @@ public:
 
 private:
     std::ofstream& csvFile;
+    std::string currentTestDir_;
 };
 }  // namespace WuKong
 }  // namespace OHOS

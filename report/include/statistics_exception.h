@@ -13,30 +13,30 @@
  * limitations under the License.
  */
 
-#ifndef TEST_WUKONG_KEYBOARD_INPUT_H
-#define TEST_WUKONG_KEYBOARD_INPUT_H
-
+#ifndef TEST_WUKONG_STATISTICS_EXCEPTION_H
+#define TEST_WUKONG_STATISTICS_EXCEPTION_H
+#include <iomanip>
 #include <string>
 
-#include "input_action.h"
-#include "input_msg_object.h"
+#include "data_set.h"
+#include "statistics.h"
+#include "wukong_define.h"
 
 namespace OHOS {
 namespace WuKong {
-class KeyboardInput : public InputAction {
+class StatisticsException : public Statistics {
 public:
-    KeyboardInput();
-    ~KeyboardInput();
-
-    /**
-     * @brief input a keyboard event in random test.
-     * @return Return ERR_OK on success， others on failure.
-     */
-    ErrCode RandomInput();
-    ErrCode GetInputInfo();
+    StatisticsException() = default;
+    ~StatisticsException() = default;
+    void StatisticsDetail(std::vector<std::map<std::string, std::string>> srcDatas,
+                          std::map<std::string, std::shared_ptr<Table>> &destTables);
 private:
-    std::shared_ptr<InputedMsgObject> inputedMsgObject_;
+    uint32_t exceptionTotal_ = 0;
+    std::map<std::string, int> exceptionTypeCount_;
+    std::vector<std::string> crashTypes_;
+    std::vector<std::string> headers_ = {"type", "times", "proportion"};
+    std::vector<std::vector<std::string>> record_;
 };
 }  // namespace WuKong
 }  // namespace OHOS
-#endif  // TEST_WUKONG_KEYBOARD_INPUT_H
+#endif

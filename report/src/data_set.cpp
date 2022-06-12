@@ -15,6 +15,9 @@
 
 #include "data_set.h"
 
+#include <iostream>
+#include <string>
+
 namespace OHOS {
 namespace WuKong {
 using namespace std;
@@ -34,7 +37,9 @@ void DataSet::SetFilterStragety(shared_ptr<Filter> filter)
 
 void DataSet::StatisticsData()
 {
+    DEBUG_LOG_STR("current dataVector length{%d}", dataVector_.size());
     statistics_->StatisticsDetail(dataVector_, tables_);
+    dataVector_.clear();
 }
 
 void DataSet::SetStatisticsStragety(shared_ptr<Statistics> statistics)
@@ -42,19 +47,19 @@ void DataSet::SetStatisticsStragety(shared_ptr<Statistics> statistics)
     statistics_ = statistics;
 }
 
-void DataSet::FormatCSVData(std::string name, std::string &content)
+void DataSet::FormatData(std::string name, std::string &content)
 {
     std::map<std::string, std::shared_ptr<Table>>::iterator tablesIter = tables_.find(name);
     if (tablesIter == tables_.end()) {
         return;
     }
     std::shared_ptr<Table> table = tables_[name];
-    formatCSV_->FormatDetail(table, content);
+    format_->FormatDetail(table, content);
 }
 
-void DataSet::SetFormatCSVStragety(std::shared_ptr<Format> formatCSV)
+void DataSet::SetFormatStragety(std::shared_ptr<Format> format)
 {
-    formatCSV_ = formatCSV;
+    format_ = format;
 }
 }  // namespace WuKong
 }  // namespace OHOS
