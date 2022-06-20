@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -123,6 +123,7 @@ private:
     std::vector<std::string> crashFiles_;
     std::string seed_ = "";
     int taskCount_ = 0;
+    bool isFirstAppSwitch_ = false;
     time_t startTime_ = time(0);
     std::mutex crashMtx_;
     std::vector<std::string> crashDirs_ = {"/data/log/faultlog/faultlogger/", "/data/log/faultlog/temp/"};

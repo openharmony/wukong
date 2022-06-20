@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -60,10 +60,10 @@ private:
     {
         inputElementInfo_ = info;
     }
-    std::shared_ptr<ComponentTree> inputElementInfo_;
-    uint32_t validComponentCount_;
-    uint32_t allComponentCount_;
-    uint32_t count_;
+    std::shared_ptr<ComponentTree> inputElementInfo_ = nullptr;
+    uint32_t validComponentCount_ = 0;
+    uint32_t allComponentCount_ = 0;
+    uint32_t count_ = 0;
 };
 }  // namespace WuKong
 }  // namespace OHOS

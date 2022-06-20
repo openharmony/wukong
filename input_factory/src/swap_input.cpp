@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,7 @@ namespace WuKong {
 SwapInput::SwapInput() : InputAction()
 {
     std::shared_ptr<MultimodeInputMsg> multimodeInputMsg = std::make_shared<MultimodeInputMsg>();
-    multimodeInputMsg->inputType_ = INPUTTYPE_TOUCHINPUT;
+    multimodeInputMsg->inputType_ = INPUTTYPE_SWAPINPUT;
     inputedMsgObject_ = multimodeInputMsg;
 }
 

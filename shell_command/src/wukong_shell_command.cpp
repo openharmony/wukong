@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +14,8 @@
  */
 
 #include "wukong_shell_command.h"
+
+#include <stdlib.h>
 
 #include "ability_manager_client.h"
 #include "accessibility_element_info.h"
@@ -33,10 +35,9 @@ namespace WuKong {
 namespace {
 const std::string WUKONG_TOOL_NAME = "wukong";
 
-const std::string WUKONG_TOOL_VERSION = "1.1.0\n";
+const std::string WUKONG_TOOL_VERSION = "version: 1.1.0\n";
 
-const std::string ACE_ENABLE_INFO =
-    "please run 'hdc_std shell param set persist.ace.testmode.enabled 1' and reboot your device\n";
+const std::string ACE_ENABLE = "param set persist.ace.testmode.enabled 1";
 
 const std::string WUKONG_HELP_MSG =
     "usage: wukong <command> [<arguments>]\n"
@@ -137,8 +138,7 @@ ErrCode WuKongShellCommand::RunTestCommand()
     auto aacPtr = OHOS::Accessibility::AccessibilityUITestAbility::GetInstance();
     OHOS::Accessibility::AccessibilityElementInfo root;
     if (!aacPtr->GetRoot(root)) {
-        resultReceiver_.append(ACE_ENABLE_INFO);
-        return OHOS::ERR_INVALID_OPERATION;
+	system(ACE_ENABLE.c_str());
     }
     // run test flow.
     res = testFlow->Run();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -49,7 +49,8 @@ void DataSet::SetStatisticsStragety(shared_ptr<Statistics> statistics)
 
 void DataSet::FormatData(std::string name, std::string &content)
 {
-    std::map<std::string, std::shared_ptr<Table>>::iterator tablesIter = tables_.find(name);
+    std::map<std::string, std::shared_ptr<Table>>::iterator tablesIter;
+    tablesIter = tables_.find(name);
     if (tablesIter == tables_.end()) {
         return;
     }

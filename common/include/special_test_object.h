@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -138,11 +138,13 @@ public:
         bundleRunning_.push_back(false);
         bundleFinish_.push_back(false);
         pageBack_.push_back(0);
+        lanuchCount_.push_back(0);
     }
     std::vector<std::string> bundleName_;
     std::vector<bool> bundleRunning_;
     std::vector<bool> bundleFinish_;
     std::vector<uint32_t> pageBack_;
+    std::vector<uint32_t> lanuchCount_;
 };
 class RecordParam : public SpcialTestObject {
 public:
@@ -153,7 +155,7 @@ public:
     {
     }
     std::string recordName_;
-    bool recordStatus_;
+    bool recordStatus_ = false;
 };
 }  // namespace WuKong
 }  // namespace OHOS

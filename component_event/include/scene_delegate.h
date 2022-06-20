@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,7 +47,7 @@ public:
     {
         return componentType_;
     }
-    
+
     uint64_t GetCurrentPageId()
     {
         return pageId_;
@@ -60,8 +60,8 @@ private:
      * @param othercomponentinfo the information of another component tree
      * @return ERR_OK is success,other is fail
      */
-    ErrCode CompareComponentInfos(std::shared_ptr<ComponentTree> newcomponentinfo,
-                                  std::shared_ptr<ComponentTree> oldcomponentinfo, bool isRandom);
+    ErrCode CompareComponentInfos(std::shared_ptr<ComponentTree> &newcomponentinfo,
+                                  std::shared_ptr<ComponentTree> &oldcomponentinfo, bool isRandom);
 
     /**
      * @brief get all componentinfo of active page

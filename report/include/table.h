@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,13 @@
 namespace OHOS {
 namespace WuKong {
 class Table {
+private:
+    std::string name_;
+    std::string detail_;
+    std::vector<std::string> column_header_;
+    std::vector<int> column_size_;
+    std::vector<std::vector<std::string>> record_;
+
 public:
     Table() = default;
     ~Table() = default;
@@ -33,13 +40,6 @@ public:
     std::vector<std::string> GetHeader();
     std::vector<std::vector<std::string>> GetRecord();
     std::vector<int> GetColumnSize();
-
-private:
-    std::string name_;
-    std::string detail_;
-    std::vector<std::string> column_header_;
-    std::vector<int> column_size_;
-    std::vector<std::vector<std::string>> record_;
 };
 }  // namespace WuKong
 }  // namespace OHOS

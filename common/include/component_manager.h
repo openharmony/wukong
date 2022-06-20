@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,8 +21,7 @@
 
 namespace OHOS {
 namespace WuKong {
-enum ComponentStatus
-{
+enum ComponentStatus {
     COMPONENT_STATUS_DISCONNECT,
     COMPONENT_STATUS_CONNECTED,
     COMPONENT_STATUS_CONNECTING

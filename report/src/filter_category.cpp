@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,7 +29,8 @@ void FilterCategory::FilterDetail(std::string type, std::map<std::string, std::s
                                   std::vector<std::map<std::string, std::string>> &dataVector)
 {
     DEBUG_LOG_STR("filter by category{%s}", type.c_str());
-    std::map<std::string, std::string>::iterator it = data.find(type);
+    std::map<std::string, std::string>::iterator it;
+    it = data.find(type);
     if ((it != data.end()) && (!it->second.empty())) {
         DEBUG_LOG("record data");
         dataVector.push_back(data);

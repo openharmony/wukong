@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -178,14 +178,14 @@ private:
     std::vector<std::shared_ptr<OHOS::Accessibility::AccessibilityElementInfo>> inputElementInfoList_;
     std::vector<std::shared_ptr<ComponentTree>> inputComponentList_;
 
-    std::shared_ptr<ComponentTree> currentComponentNode_;
-    std::shared_ptr<ComponentTree> newComponentNode_;
+    std::shared_ptr<ComponentTree> currentComponentNode_ = std::make_shared<ComponentTree>();
+    std::shared_ptr<ComponentTree> newComponentNode_ = std::make_shared<ComponentTree>();
 
-    std::shared_ptr<AbilityTree> currentAbilityNode_;
-    std::shared_ptr<AbilityTree> newAbilityNode_;
+    std::shared_ptr<AbilityTree> currentAbilityNode_ = std::make_shared<AbilityTree>();
+    std::shared_ptr<AbilityTree> newAbilityNode_ = std::make_shared<AbilityTree>();
 
-    std::shared_ptr<PageTree> currentPageNode_;
-    std::shared_ptr<PageTree> newPageNode_;
+    std::shared_ptr<PageTree> currentPageNode_ = std::make_shared<PageTree>();
+    std::shared_ptr<PageTree> newPageNode_ = std::make_shared<PageTree>();
 
     std::vector<std::shared_ptr<OHOS::Accessibility::AccessibilityElementInfo>> newElementInfoList_;
 

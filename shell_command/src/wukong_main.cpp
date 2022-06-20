@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,7 @@
 
 using namespace OHOS::WuKong;
 
-static unsigned int NUMBER_TWO = 2;
+const int NUMBER_TWO = 2;
 
 static bool FreeSingtion()
 {
@@ -48,13 +48,13 @@ static bool FreeSingtion()
 
 static void WuKongMutexFile()
 {
-    int fileExist_ = access("/dev/shm", F_OK);
-    if (fileExist_ == 0) {
+    int fileExist = access("/dev/shm", F_OK);
+    if (fileExist == 0) {
         DEBUG_LOG("File exist. Now create wukong test mutex.");
     } else {
-        const int wukongm_ = mkdir("/dev/shm", 0777);
+        const int WUKONG_GM = mkdir("/dev/shm", 0777);
         DEBUG_LOG("File create. Now create wukong test mutex.");
-        if (wukongm_ == -1) {
+        if (WUKONG_GM == -1) {
             DEBUG_LOG("Error creating directory!");
         }
     }
@@ -148,7 +148,6 @@ int main(int argc, char* argv[])
     if (!WuKonglogger->Start()) {
         return 1;
     }
-
     NamedSemaphore semRun(SEMPHORE_RUN_NAME, 1);
     InitSemaphore(semRun, 1);
     NamedSemaphore semStop(SEMPHORE_STOP_NAME, 1);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -173,7 +173,6 @@ ErrCode TreeManager::MakeAndCheckNewAbility()
             return OHOS::ERR_INVALID_OPERATION;
         }
         currentPageNode_ = pageTreeList_[currentAbilityNode_->GetIndex()];
-
         if (componentTreeList_.find(currentPageNode_->GetIndex()) == componentTreeList_.end()) {
             ERROR_LOG_STR("page index (%d) more than componentTreeList count (%d)", currentPageNode_->GetIndex(),
                           componentTreeList_.size());
@@ -410,7 +409,6 @@ bool TreeManager::RemovePage()
     TRACK_LOG_STD();
     uint32_t componentNodeIndex = currentPageNode_->GetIndex();
     uint32_t componentTreeListCount = componentTreeList_.size();
-
     if (componentNodeIndex >= componentTreeListCount) {
         ERROR_LOG_STR("currentPageNode index (%u) more than componentTreeList_ size (%u)", componentNodeIndex,
                       componentTreeListCount);

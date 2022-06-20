@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,6 +28,7 @@ namespace OHOS {
 namespace WuKong {
 namespace {
 const uint32_t PAGE_BACK_COUNT_MAX = 3;
+const uint32_t LANUCH_APP_COUNT_MAX = 5;
 
 ErrCode LauncherApp(const std::string& bundleName)
 {
@@ -175,7 +176,18 @@ ErrCode ComponentInput::OrderInput(const std::shared_ptr<SpcialTestObject>& spec
             componentPtr->pageBack_[launchIndex]++;
             if (componentPtr->pageBack_[launchIndex] > PAGE_BACK_COUNT_MAX) {
                 result = LauncherApp(componentPtr->bundleName_[launchIndex]);
+                if (result != OHOS::ERR_OK) {
+                    return result;
+                }
                 componentPtr->pageBack_[launchIndex] = 0;
+                componentPtr->lanuchCount_[launchIndex]++;
+                TRACK_LOG_STR("lanuchCount_[%d] = %d", launchIndex, componentPtr->lanuchCount_[launchIndex]);
+                if (componentPtr->lanuchCount_[launchIndex] > LANUCH_APP_COUNT_MAX) {
+                    componentPtr->bundleFinish_[launchIndex] = true;
+                    ERROR_LOG("Failed to launch the app five times in a row and exit");
+                    componentPtr->lanuchCount_[launchIndex] = 0;
+                    return OHOS::ERR_INVALID_VALUE;
+                }
             } else {
                 result = ComponentManager::GetInstance()->BackToPrePage();
             }
@@ -193,6 +205,7 @@ ErrCode ComponentInput::OrderInput(const std::shared_ptr<SpcialTestObject>& spec
             if (result == OHOS::ERR_OK) {
                 treemanager->SetInputcomponentIndex(actionType);
                 componentPtr->pageBack_[launchIndex] = 0;
+                componentPtr->lanuchCount_[launchIndex] = 0;
                 std::shared_ptr<ComponmentInputMsg> componentInputMsg = std::make_shared<ComponmentInputMsg>();
                 componentInputMsg->pageComponments = delegate->GetComponentTypeList();
                 componentInputMsg->pageId_ = delegate->GetCurrentPageId();
@@ -232,7 +245,7 @@ ErrCode ComponentInput::RandomInput()
         if (delegate->IsBackToPrePage()) {
             result = ComponentManager::GetInstance()->BackToPrePage();
         } else if (componentInfos.size() > 0) {
-            uint32_t index = rand() % componentInfos.size();
+            uint32_t index = (uint32_t)(rand() % componentInfos.size());
             DEBUG_LOG_STR("component input index (%d)", index);
             int actionType = JudgeComponentType(*(componentInfos[index].get()));
             if (actionType == Accessibility::ACCESSIBILITY_ACTION_INVALID) {
@@ -280,7 +293,7 @@ int ComponentInput::JudgeComponentType(OHOS::Accessibility::AccessibilityElement
         }
     } else {
         TRACK_LOG_STR("action list size: %u", actionlist.size());
-        auto it = actionlist[rand() % actionlist.size()];
+        auto it = actionlist[(uint32_t)(rand() % actionlist.size())];
         actionType = (int)it.GetActionType();
     }
     TRACK_LOG_STR("action type: %d", actionType);

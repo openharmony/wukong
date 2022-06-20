@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -43,6 +43,7 @@ namespace {
 const uint32_t SEGMENT_STATISTICS_LENGTH = 20;
 }  // namespace
 using namespace OHOS::AAFwk;
+
 Report::Report()
 {
     EnvInit();
@@ -70,7 +71,7 @@ void Report::DataSetInit()
     std::shared_ptr<Filter> categoryFilter = std::make_shared<FilterCategory>();
     eventDataSet_->SetFilterStragety(categoryFilter);
     eventDataSet_->SetFilterType("event");
-    std::shared_ptr<Statistics> eventSatistics = std::make_shared<StatisticsEvent>();
+    std::shared_ptr<Statistics> eventSatistics = std::make_shared<StatisticsElemnt>();
     eventDataSet_->SetStatisticsStragety(eventSatistics);
 
     // set componment filter,statistics,format
@@ -100,23 +101,33 @@ void Report::SyncInputInfo(std::shared_ptr<InputedMsgObject> inputedMsgObject)
     std::map<std::string, std::string> data;
     data["bundleName"] = elementName.GetBundleName();
     data["abilityName"] = elementName.GetAbilityName();
+    DEBUG_LOG_STR("bundleName{%s} abilityName{%s} ", data["bundleName"].c_str(), data["abilityName"].c_str());
     inputedMode inputMode = inputedMsgObject->GetInputedMode();
     switch (inputMode) {
         case multimodeInput: {
             auto inputMutlMsgPtr = std::static_pointer_cast<MultimodeInputMsg>(inputedMsgObject);
             data["event"] = inputMutlMsgPtr->GetInputType();
+            DEBUG_LOG_STR("eventType{%s}", data["event"].c_str());
             break;
         }
 
         case componmentInput: {
             auto inputCompMsgPtr = std::static_pointer_cast<ComponmentInputMsg>(inputedMsgObject);
             ComponmentInfoArrange(data["bundleName"], inputCompMsgPtr, data);
+            DEBUG_LOG("componmentType map");
             break;
         }
         default:
             break;
     }
-    DEBUG_LOG_STR("bundleName{%s} abilityName{%s} ", data["bundleName"].c_str(), data["abilityName"].c_str());
+
+    // first appswitch abandon
+    std::map<std::string, std::string>::iterator it = data.find("event");
+    if (it != data.end() && (data["event"] == "appswitch") && (isFirstAppSwitch_ == false)) {
+        DEBUG_LOG("first appswitch abandon");
+        isFirstAppSwitch_ = true;
+        return;
+    }
     // record app used to control data display
     std::vector<std::string>::iterator bundleIter = std::find(bundles_.begin(), bundles_.end(), data["bundleName"]);
     if (bundleIter == bundles_.end()) {

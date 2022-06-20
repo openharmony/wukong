@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,9 +23,9 @@
 namespace OHOS {
 namespace WuKong {
 namespace {
-const int oneHundred = 100;
-const int mouseRightPercent = 20;
-const int mouseMidPercent = 10;
+const int ONEHUNDRED = 100;
+const int MOUSE_RIGHT_PERCENT = 20;
+const int MOUSE_MID_PERCENT = 10;
 }  // namespace
 MouseInput::MouseInput() : InputAction()
 {
@@ -53,10 +53,10 @@ ErrCode MouseInput::RandomInput()
     int xClickPosition = rand() % screenWidth;
     int yClickPosition = rand() % screenHeight;
     // distrbute type accord to percentage
-    int randomInt = rand() % oneHundred;
-    if (randomInt < mouseMidPercent) {
+    int randomInt = rand() % ONEHUNDRED;
+    if (randomInt < MOUSE_MID_PERCENT) {
         mouseType = MMI::PointerEvent::MOUSE_BUTTON_MIDDLE;
-    } else if (randomInt < (mouseRightPercent + mouseMidPercent)) {
+    } else if (randomInt < (MOUSE_RIGHT_PERCENT + MOUSE_MID_PERCENT)) {
         mouseType = MMI::PointerEvent::MOUSE_BUTTON_RIGHT;
     } else {
         mouseType = MMI::PointerEvent::MOUSE_BUTTON_LEFT;

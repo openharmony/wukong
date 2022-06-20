@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 #include "wukong_util.h"
 
 #include <dirent.h>
+#include <limits.h>
 #include <memory.h>
 #include <sys/stat.h>
 
@@ -57,9 +58,14 @@ bool TakeWuKongScreenCap(std::string wkScreenPath)
         png_destroy_write_struct(&pngStruct, nullptr);
         return false;
     }
+    char filepath[PATH_MAX];
+    if (!realpath(wkScreenPath.c_str(), filepath)) {
+        ERROR_LOG("failed to get file path");
+        return false;
+    }
     FILE *fp = fopen(wkScreenPath.c_str(), "wb");
     if (fp == nullptr) {
-        DEBUG_LOG("error: open file error!");
+        ERROR_LOG("error: open file error!");
         png_destroy_write_struct(&pngStruct, &pngInfo);
         return false;
     }
@@ -80,7 +86,7 @@ bool TakeWuKongScreenCap(std::string wkScreenPath)
 }  // namespace
 using namespace std;
 using namespace OHOS::AppExecFwk;
-const int userId = 100;
+const int USE_ID = 100;
 const uint32_t INVALIDVALUE = 0xFFFFFFFF;
 WuKongUtil::WuKongUtil()
 {
@@ -139,7 +145,7 @@ ErrCode WuKongUtil::GetAllAppInfo()
     AppExecFwk::LauncherService launcherservice;
     std::vector<AppExecFwk::LauncherAbilityInfo> launcherAbilityInfos(0);
 
-    bool result = launcherservice.GetAllLauncherAbilityInfos(userId, launcherAbilityInfos);
+    bool result = launcherservice.GetAllLauncherAbilityInfos(USE_ID, launcherAbilityInfos);
     DEBUG_LOG_STR("GetAllLauncherAbilityInfos: size (%u), result (%d)", launcherAbilityInfos.size(), result);
     if (launcherAbilityInfos.size() <= 0) {
         ERROR_LOG("GetAllLauncherAbilityInfos size is 0");
@@ -344,7 +350,7 @@ void WuKongUtil::GetAllAbilitiesByBundleName(std::string bundleName, std::vector
     TRACK_LOG_STD();
     sptr<IBundleMgr> bundleMgrProxy = GetBundleMgrProxy();
     std::vector<BundleInfo> bundleInfos;
-    bool getInfoResult = bundleMgrProxy->GetBundleInfos(BundleFlag::GET_BUNDLE_DEFAULT, bundleInfos, userId);
+    bool getInfoResult = bundleMgrProxy->GetBundleInfos(BundleFlag::GET_BUNDLE_DEFAULT, bundleInfos, USE_ID);
     if (!getInfoResult) {
         ERROR_LOG("GetBundleInfos ERR");
         return;

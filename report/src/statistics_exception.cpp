@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) Huawei Technologies Co., Ltd. 2022.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 
 #include "statistics_exception.h"
 
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -25,14 +26,16 @@
 namespace OHOS {
 namespace WuKong {
 namespace {
+using namespace std;
 const uint32_t DECIMAL_LENGTH = 2;
 const float PERCENTAGE = 100.0;
 }  // namespace
 void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std::string>> srcDatas,
                                            std::map<std::string, std::shared_ptr<Table>> &destTables)
 {
-    std::string crashType;
-    std::stringstream bufferStream;
+    string crashType;
+    stringstream bufferStream;
+    std::vector<std::string>::iterator crashTypesIter;
     for (auto srcDatasIter : srcDatas) {
         // check exception name
         if (srcDatasIter.count("exception") == 0) {
@@ -40,7 +43,7 @@ void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std
         }
         crashType = srcDatasIter["exception"];
         // check app is insert apps
-        std::vector<std::string>::iterator crashTypesIter = find(crashTypes_.begin(), crashTypes_.end(), crashType);
+        crashTypesIter = find(crashTypes_.begin(), crashTypes_.end(), crashType);
         if (crashTypesIter == crashTypes_.end()) {
             DEBUG_LOG_STR("crashType{%s} init", crashType.c_str());
             crashTypes_.push_back(crashType);
@@ -53,13 +56,13 @@ void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std
 
     int curExceptionTypeCount;
     float proportion;
-    std::string proportionStr;
-    std::vector<std::string> line;
+    string proportionStr;
+    vector<string> line;
     for (auto crashTypesIter : crashTypes_) {
         line.push_back(crashTypesIter);
         curExceptionTypeCount = exceptionTypeCount_[crashTypesIter];
-        DEBUG_LOG_STR("curExceptionTypeCount{%d}", curExceptionTypeCount);
-        line.push_back(std::to_string(curExceptionTypeCount));
+        DEBUG_LOG_STR("curExceptionType{%s} Count{%d}", crashTypesIter.c_str(), curExceptionTypeCount);
+        line.push_back(to_string(curExceptionTypeCount));
         if (exceptionTotal_ <= 0) {
             ERROR_LOG("statistics error");
             return;
@@ -73,10 +76,10 @@ void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std
         line.clear();
     }
     if (exceptionTotal_ != 0) {
-        line = {"total", std::to_string(exceptionTotal_), "100%"};
+        line = {"total", to_string(exceptionTotal_), "100%"};
         record_.push_back(line);
     }
-    std::shared_ptr<Table> table = std::make_shared<Table>(headers_, record_);
+    shared_ptr<Table> table = make_shared<Table>(headers_, record_);
     record_.clear();
     table->SetName("exception");
     table->SetDetail("statistics");
