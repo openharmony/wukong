@@ -23,10 +23,6 @@
 
 namespace OHOS {
 namespace WuKong {
-namespace {
-const uint32_t INVALIDVALUE = 0xFFFFFFFF;
-const uint32_t WAIT_TIME = 1000000;
-}  // namespace
 AppswitchInput::AppswitchInput() : InputAction()
 {
     std::shared_ptr<MultimodeInputMsg> multimodeInputMsg = std::make_shared<MultimodeInputMsg>();

@@ -138,6 +138,20 @@ public:
      */
     std::string GetCurrentTestDir();
 
+    /*
+     * @brief copy file from soruce to dest
+     * @param sourceFile
+     * @param destFile
+     * @return bool
+     */
+    bool CopyFile(const char *sourceFile, const char *destFile);
+
+    /**
+     * @brief check dir status
+     * @param dir
+     */
+    bool CheckFileStatus(const char *dir);
+
     DECLARE_DELAYED_SINGLETON(WuKongUtil);
 
 private:

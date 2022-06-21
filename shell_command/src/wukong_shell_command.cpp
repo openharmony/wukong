@@ -15,7 +15,7 @@
 
 #include "wukong_shell_command.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "ability_manager_client.h"
 #include "accessibility_element_info.h"
@@ -138,7 +138,7 @@ ErrCode WuKongShellCommand::RunTestCommand()
     auto aacPtr = OHOS::Accessibility::AccessibilityUITestAbility::GetInstance();
     OHOS::Accessibility::AccessibilityElementInfo root;
     if (!aacPtr->GetRoot(root)) {
-	system(ACE_ENABLE.c_str());
+        system(ACE_ENABLE.c_str());
     }
     // run test flow.
     res = testFlow->Run();

@@ -43,7 +43,6 @@ namespace {
 const uint32_t SEGMENT_STATISTICS_LENGTH = 20;
 }  // namespace
 using namespace OHOS::AAFwk;
-
 Report::Report()
 {
     EnvInit();
@@ -53,12 +52,24 @@ Report::Report()
 void Report::EnvInit()
 {
     // setting filename
-    reportCsvFileName_ = WuKongUtil::GetInstance()->GetCurrentTestDir() + "wukong_report.csv";
-    reportJsonFileName_ = WuKongUtil::GetInstance()->GetCurrentTestDir() + "data.js";
     currentTestDir_ = WuKongUtil::GetInstance()->GetCurrentTestDir();
+    INFO_LOG_STR("Report currentTestDir: (%s)", currentTestDir_.c_str());
+    // setting filename
+    reportCsvFileName_ = currentTestDir_ + "wukong_report.csv";
+    reportJsonFileName_ = currentTestDir_ + "data.js";
+
     INFO_LOG_STR("Report CSV: (%s)", reportCsvFileName_.c_str());
     INFO_LOG_STR("Report JSON: (%s)", reportJsonFileName_.c_str());
-    INFO_LOG_STR("Report currentTestDir: (%s)", currentTestDir_.c_str());
+
+    reportExceptionDir_ = currentTestDir_ + "exception/";
+    INFO_LOG_STR("Report exception dir: (%s)", reportExceptionDir_.c_str());
+    int dirExist = access(reportExceptionDir_.c_str(), F_OK);
+    if (dirExist != 0) {
+        int dirStatus = mkdir((reportExceptionDir_).c_str(), 0777);
+        if (dirStatus == -1) {
+            ERROR_LOG("exception dir create fail");
+        }
+    }
 
     // clear crash dir file
     CrashFileClear();
@@ -71,7 +82,7 @@ void Report::DataSetInit()
     std::shared_ptr<Filter> categoryFilter = std::make_shared<FilterCategory>();
     eventDataSet_->SetFilterStragety(categoryFilter);
     eventDataSet_->SetFilterType("event");
-    std::shared_ptr<Statistics> eventSatistics = std::make_shared<StatisticsElemnt>();
+    std::shared_ptr<Statistics> eventSatistics = std::make_shared<StatisticsEvent>();
     eventDataSet_->SetStatisticsStragety(eventSatistics);
 
     // set componment filter,statistics,format
@@ -308,26 +319,46 @@ void Report::SegmentedWriteJson()
 void Report::CrashFileRecord()
 {
     std::unique_lock<std::mutex> locker(crashMtx_);
+    struct dirent *dp;
+    DIR *dirp;
+    std::shared_ptr<WuKongUtil> utilPtr = WuKongUtil::GetInstance();
     for (auto iter : crashDirs_) {
         DIR *dirp;
         struct dirent *dp;
         dirp = opendir(iter.c_str());
-        std::vector<std::string>::iterator iterDir;
         while ((dp = readdir(dirp)) != NULL) {
             std::string targetFile(dp->d_name);
             if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0)) {
-                iterDir = find(crashFiles_.begin(), crashFiles_.end(), targetFile);
+                std::vector<std::string>::iterator iterDir = find(crashFiles_.begin(), crashFiles_.end(), targetFile);
                 if (iterDir == crashFiles_.end()) {
-                    std::string destLocation = currentTestDir_ + targetFile;
-                    std::string srcFilePath = iter + targetFile;
-                    CopyFile(srcFilePath.c_str(), destLocation.c_str());
-                    crashFiles_.push_back(std::string(dp->d_name));
-                    ExceptionRecord(targetFile);
+                    DEBUG_LOG_STR("iter{%s}", iter.c_str());
+                    if (utilPtr->CheckFileStatus(iter.c_str()) &&
+                        utilPtr->CheckFileStatus(reportExceptionDir_.c_str())) {
+                        DEBUG_LOG("copy action");
+                        std::string destLocation = reportExceptionDir_ + targetFile;
+                        std::string srcFilePath = iter + targetFile;
+                        utilPtr->CopyFile(srcFilePath.c_str(), destLocation.c_str());
+                        crashFiles_.push_back(std::string(dp->d_name));
+                        ExceptionRecord(targetFile);
+                    }
                 }
             }
         }
         (void)closedir(dirp);
     }
+    dirp = opendir(hilogDirs_.c_str());
+    while ((dp = readdir(dirp)) != NULL) {
+        std::string targetFile(dp->d_name);
+        if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0)) {
+            if (utilPtr->CheckFileStatus(reportExceptionDir_.c_str()) && utilPtr->CheckFileStatus(hilogDirs_.c_str())) {
+                DEBUG_LOG("copy action");
+                std::string destLocation = reportExceptionDir_ + targetFile;
+                std::string srcFilePath = hilogDirs_ + targetFile;
+                utilPtr->CopyFile(srcFilePath.c_str(), destLocation.c_str());
+            }
+        }
+    }
+    (void)closedir(dirp);
 }
 
 void Report::ExceptionRecord(const std::string &exceptionFilename)
@@ -346,37 +377,12 @@ void Report::ExceptionRecord(const std::string &exceptionFilename)
         exceptionType = "jscrash";
     }
 
-    if (exceptionFilename.find("service-block") != std::string::npos) {
-        exceptionType = "service-block";
+    if (exceptionFilename.find("serviceblock") != std::string::npos) {
+        exceptionType = "serviceblock";
     }
 
     data["exception"] = exceptionType;
     exceptionDataSet_->FilterData(data);
-}
-
-bool Report::CopyFile(const char *sourceFile, const char *destFile)
-{
-    std::ifstream in;
-    std::ofstream out;
-    in.open(sourceFile, std::ios::binary);
-
-    if (in.fail()) {
-        std::cout << "Error 1: Fail to open the source file." << std::endl;
-        in.close();
-        out.close();
-        return false;
-    }
-    out.open(destFile, std::ios::binary);
-    if (out.fail()) {
-        std::cout << "Error 2: Fail to create the new file." << std::endl;
-        out.close();
-        in.close();
-        return false;
-    }
-    out << in.rdbuf();
-    out.close();
-    in.close();
-    return true;
 }
 
 void Report::CrashFileClear()

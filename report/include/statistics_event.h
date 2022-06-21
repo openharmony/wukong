@@ -25,56 +25,56 @@
 
 namespace OHOS {
 namespace WuKong {
-class ElementStatisticsRecord {
+class EventStatisticsRecord {
 public:
-    std::string elementType_ = "";
+    std::string eventType_ = "";
     uint32_t execTimes_ = 0;
 };
 
-class ElementStatisticsMsg {
+class EventStatisticsMsg {
 public:
     /*
-     * @brief find elementType position in elementTypes_
-     * @param elementType
+     * @brief find eventType position in eventTypes_
+     * @param eventType
      * @return index
      */
-    uint32_t ElementTypesIndex(const std::string &elementType)
+    uint32_t ElementTypesIndex(const std::string &eventType)
     {
-        uint32_t index = elementTypes_.size();
-        DEBUG_LOG_STR("elementTypes_.size{%d}", index);
-        std::vector<std::string>::iterator elementTypesIter;
-        elementTypesIter = find(elementTypes_.begin(), elementTypes_.end(), elementType);
-        if (elementTypesIter != elementTypes_.end()) {
-            index = elementTypesIter - elementTypes_.begin();
+        uint32_t index = eventTypes_.size();
+        DEBUG_LOG_STR("eventTypes_.size{%d}", index);
+        std::vector<std::string>::iterator eventTypesIter;
+        eventTypesIter = find(eventTypes_.begin(), eventTypes_.end(), eventType);
+        if (eventTypesIter != eventTypes_.end()) {
+            index = eventTypesIter - eventTypes_.begin();
             DEBUG_LOG_STR("find index{%d}", index);
         }
         DEBUG_LOG_STR("find index{%d}", index);
         return index;
     }
-    std::vector<std::string> elementTypes_;
-    std::vector<std::shared_ptr<ElementStatisticsRecord>> elementTypeRecord_;
-    uint32_t elementTypeTotal_ = 0;
+    std::vector<std::string> eventTypes_;
+    std::vector<std::shared_ptr<EventStatisticsRecord>> eventTypeRecord_;
+    uint32_t eventTypeTotal_ = 0;
 };
 
-class StatisticsElemnt : public Statistics {
+class StatisticsEvent : public Statistics {
 public:
-    StatisticsElemnt() = default;
-    ~StatisticsElemnt() = default;
+    StatisticsEvent() = default;
+    ~StatisticsEvent() = default;
     void StatisticsDetail(std::vector<std::map<std::string, std::string>> srcDatas,
                           std::map<std::string, std::shared_ptr<Table>> &destTables);
 
 private:
     /*
      * @brief statistics msg update to line
-     * @param ElementStatisticsRecordPtr store statistics msg
-     * @param elementTypeTotal Proportion to calculate the total
+     * @param EventStatisticsRecordPtr store statistics msg
+     * @param eventTypeTotal Proportion to calculate the total
      * @param line output
      * @return void
      */
-    void UpdateLine(std::shared_ptr<ElementStatisticsRecord> elementStatisticsRecordPtr, uint32_t elementTypeTotal,
+    void UpdateLine(std::shared_ptr<EventStatisticsRecord> eventStatisticsRecordPtr, uint32_t eventTypeTotal,
                     std::vector<std::string> &line);
     /*
-     * @brief Realize secondary classification and update statistics of source data through bundleName and element
+     * @brief Realize secondary classification and update statistics of source data through bundleName and event
      * methods
      * @param srcDatas filtered data
      * @return void
@@ -86,9 +86,9 @@ private:
      */
     void GlobalElementTypesStatistics();
 
-    // bundle map ElementStatisticsMsgPtr
-    std::map<std::string, std::shared_ptr<ElementStatisticsMsg>> elementStatisticsMsg_;
-    // all elementTypes record for global statistics used
+    // bundle map EventStatisticsMsgPtr
+    std::map<std::string, std::shared_ptr<EventStatisticsMsg>> eventStatisticsMsg_;
+    // all eventTypes record for global statistics used
     std::vector<std::string> globalElementTypes_;
     
     std::vector<std::string> headers_ = {"type", "execTimes", "proportion"};

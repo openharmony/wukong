@@ -85,7 +85,7 @@ const map<int, InputType> OPTION_INPUT_PERCENT = {
 
 const int ONE_HUNDRED_PERCENT = 100;
 // one minute (ms)
-const int ONE_MINUTE= 60000;
+const int ONE_MINUTE = 60000;
 bool g_commandSEEDENABLE = false;
 bool g_commandHELPENABLE = false;
 bool g_commandTIMEENABLE = false;

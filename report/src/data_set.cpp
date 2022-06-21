@@ -49,8 +49,7 @@ void DataSet::SetStatisticsStragety(shared_ptr<Statistics> statistics)
 
 void DataSet::FormatData(std::string name, std::string &content)
 {
-    std::map<std::string, std::shared_ptr<Table>>::iterator tablesIter;
-    tablesIter = tables_.find(name);
+    std::map<std::string, std::shared_ptr<Table>>::iterator tablesIter = tables_.find(name);
     if (tablesIter == tables_.end()) {
         return;
     }

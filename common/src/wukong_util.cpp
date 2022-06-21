@@ -15,9 +15,12 @@
 
 #include "wukong_util.h"
 
+#include <climits>
 #include <dirent.h>
-#include <limits.h>
+#include <fstream>
+#include <iostream>
 #include <memory.h>
+#include <sstream>
 #include <sys/stat.h>
 
 #include "display_manager.h"
@@ -58,11 +61,6 @@ bool TakeWuKongScreenCap(std::string wkScreenPath)
         png_destroy_write_struct(&pngStruct, nullptr);
         return false;
     }
-    char filepath[PATH_MAX];
-    if (!realpath(wkScreenPath.c_str(), filepath)) {
-        ERROR_LOG("failed to get file path");
-        return false;
-    }
     FILE *fp = fopen(wkScreenPath.c_str(), "wb");
     if (fp == nullptr) {
         ERROR_LOG("error: open file error!");
@@ -87,7 +85,6 @@ bool TakeWuKongScreenCap(std::string wkScreenPath)
 using namespace std;
 using namespace OHOS::AppExecFwk;
 const int USE_ID = 100;
-const uint32_t INVALIDVALUE = 0xFFFFFFFF;
 WuKongUtil::WuKongUtil()
 {
     TRACK_LOG_STD();
@@ -315,7 +312,14 @@ ErrCode WuKongUtil::WukongScreenCap(std::string &screenStorePath)
             result = ERR_NO_INIT;
         }
     }
-    auto wkScreenPath = curDir_ + "screenshot/" + wukongts + ".png";
+    char filepath[PATH_MAX] = {'\0'};
+    char *realPath = realpath((curDir_ + "screenshot/").c_str(), filepath);
+    if (realPath == nullptr) {
+        ERROR_LOG("failed to get file path");
+        return ERR_NO_INIT;
+    }
+    std::string path(filepath);
+    auto wkScreenPath = path + "/" + wukongts + ".png";
     DEBUG_LOG_STR("WukongScreenCap store path is  {%s}", wkScreenPath.c_str());
     bool isTakeScreen = TakeWuKongScreenCap(wkScreenPath);
     if (isTakeScreen == true) {
@@ -324,6 +328,7 @@ ErrCode WuKongUtil::WukongScreenCap(std::string &screenStorePath)
     } else {
         DEBUG_LOG("This snapshot can not be created.");
     }
+    free(realPath);
     return result;
 }
 
@@ -380,6 +385,58 @@ void WuKongUtil::GetAllAbilitiesByBundleName(std::string bundleName, std::vector
 std::string WuKongUtil::GetCurrentTestDir()
 {
     return curDir_;
+}
+
+bool WuKongUtil::CopyFile(const char *sourceFile, const char *destFile)
+{
+    std::ifstream in;
+    std::ofstream out;
+    in.open(sourceFile, std::ios::binary);
+
+    if (in.fail()) {
+        std::cout << "Error 1: Fail to open the source file." << std::endl;
+        in.close();
+        out.close();
+        return false;
+    }
+    out.open(destFile, std::ios::binary);
+    if (out.fail()) {
+        std::cout << "Error 2: Fail to create the new file." << std::endl;
+        out.close();
+        in.close();
+        return false;
+    }
+    out << in.rdbuf();
+    out.close();
+    in.close();
+    return true;
+}
+
+bool WuKongUtil::CheckFileStatus(const char *dir)
+{
+    char filepath[PATH_MAX];
+    memset(filepath, 0, sizeof(char) * PATH_MAX);
+    if (!realpath(dir, filepath)) {
+        ERROR_LOG("failed to get file path");
+        return false;
+    }
+    DEBUG_LOG_STR("current filepath{%s}", filepath);
+    DIR *rootDir = nullptr;
+    std::string dirStr = "/";
+    std::vector<std::string> strs;
+    std::string usedDir(filepath);
+    OHOS::SplitStr(usedDir, "/", strs);
+    for (auto str : strs) {
+        dirStr.append(str);
+        dirStr.append("/");
+        DEBUG_LOG_STR("opendir{%s}", dirStr.c_str());
+        if ((rootDir = opendir(dirStr.c_str())) == nullptr) {
+            ERROR_LOG("dir is not exist");
+            return false;
+        }
+    }
+    return true;
+    DEBUG_LOG_STR("%s", startRunTime_.c_str());
 }
 }  // namespace WuKong
 }  // namespace OHOS

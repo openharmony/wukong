@@ -15,7 +15,6 @@
 
 #include "statistics_exception.h"
 
-#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -26,16 +25,14 @@
 namespace OHOS {
 namespace WuKong {
 namespace {
-using namespace std;
 const uint32_t DECIMAL_LENGTH = 2;
 const float PERCENTAGE = 100.0;
 }  // namespace
 void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std::string>> srcDatas,
                                            std::map<std::string, std::shared_ptr<Table>> &destTables)
 {
-    string crashType;
-    stringstream bufferStream;
-    std::vector<std::string>::iterator crashTypesIter;
+    std::string crashType;
+    std::stringstream bufferStream;
     for (auto srcDatasIter : srcDatas) {
         // check exception name
         if (srcDatasIter.count("exception") == 0) {
@@ -43,7 +40,7 @@ void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std
         }
         crashType = srcDatasIter["exception"];
         // check app is insert apps
-        crashTypesIter = find(crashTypes_.begin(), crashTypes_.end(), crashType);
+        std::vector<std::string>::iterator crashTypesIter = find(crashTypes_.begin(), crashTypes_.end(), crashType);
         if (crashTypesIter == crashTypes_.end()) {
             DEBUG_LOG_STR("crashType{%s} init", crashType.c_str());
             crashTypes_.push_back(crashType);
@@ -56,13 +53,13 @@ void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std
 
     int curExceptionTypeCount;
     float proportion;
-    string proportionStr;
-    vector<string> line;
+    std::string proportionStr;
+    std::vector<std::string> line;
     for (auto crashTypesIter : crashTypes_) {
         line.push_back(crashTypesIter);
         curExceptionTypeCount = exceptionTypeCount_[crashTypesIter];
-        DEBUG_LOG_STR("curExceptionType{%s} Count{%d}", crashTypesIter.c_str(), curExceptionTypeCount);
-        line.push_back(to_string(curExceptionTypeCount));
+        DEBUG_LOG_STR("curExceptionTypeCount{%d}", curExceptionTypeCount);
+        line.push_back(std::to_string(curExceptionTypeCount));
         if (exceptionTotal_ <= 0) {
             ERROR_LOG("statistics error");
             return;
@@ -76,10 +73,10 @@ void StatisticsException::StatisticsDetail(std::vector<std::map<std::string, std
         line.clear();
     }
     if (exceptionTotal_ != 0) {
-        line = {"total", to_string(exceptionTotal_), "100%"};
+        line = {"total", std::to_string(exceptionTotal_), "100%"};
         record_.push_back(line);
     }
-    shared_ptr<Table> table = make_shared<Table>(headers_, record_);
+    std::shared_ptr<Table> table = std::make_shared<Table>(headers_, record_);
     record_.clear();
     table->SetName("exception");
     table->SetDetail("statistics");

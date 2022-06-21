@@ -136,6 +136,33 @@ bool CheckInputFinished(const std::shared_ptr<ComponentParam>& param)
     TRACK_LOG_END();
     return isFinished;
 }
+
+ErrCode JudgeBackResult(const std::shared_ptr<ComponentParam>& param, uint32_t launchIndex)
+{
+    TRACK_LOG_STD();
+    ErrCode result = OHOS::ERR_OK;
+    param->pageBack_[launchIndex]++;
+    TRACK_LOG_STR("back count: %d", param->pageBack_[launchIndex]);
+    if (param->pageBack_[launchIndex] > PAGE_BACK_COUNT_MAX) {
+        result = LauncherApp(param->bundleName_[launchIndex]);
+        if (result != OHOS::ERR_OK) {
+            return result;
+        }
+        param->pageBack_[launchIndex] = 0;
+        param->lanuchCount_[launchIndex]++;
+        TRACK_LOG_STR("lanuchCount_[%d] = %d", launchIndex, param->lanuchCount_[launchIndex]);
+        if (param->lanuchCount_[launchIndex] > LANUCH_APP_COUNT_MAX) {
+            param->bundleFinish_[launchIndex] = true;
+            ERROR_LOG("Failed to launch the app five times in a row and exit");
+            param->lanuchCount_[launchIndex] = 0;
+            return OHOS::ERR_INVALID_VALUE;
+        }
+    } else {
+        result = ComponentManager::GetInstance()->BackToPrePage();
+    }
+    return result;
+    TRACK_LOG_END();
+}
 }  // namespace
 ComponentInput::ComponentInput() : InputAction()
 {
@@ -161,35 +188,20 @@ ErrCode ComponentInput::OrderInput(const std::shared_ptr<SpcialTestObject>& spec
         ERROR_LOG(componentPtr->toString().c_str());
         return OHOS::ERR_INVALID_VALUE;
     }
-
     auto treemanager = TreeManager::GetInstance();
+    auto delegate = SceneDelegate::GetInstance();
     result = treemanager->UpdateComponentInfo();
     DEBUG_LOG_STR("update componentinfo result (%d)", result);
     if (result == OHOS::ERR_OK) {
-        auto delegate = SceneDelegate::GetInstance();
         result = delegate->ChooseScene(false);
         if (result != OHOS::ERR_OK) {
             ERROR_LOG("choose scene failed");
             return result;
         }
         if (delegate->IsBackToPrePage()) {
-            componentPtr->pageBack_[launchIndex]++;
-            if (componentPtr->pageBack_[launchIndex] > PAGE_BACK_COUNT_MAX) {
-                result = LauncherApp(componentPtr->bundleName_[launchIndex]);
-                if (result != OHOS::ERR_OK) {
-                    return result;
-                }
-                componentPtr->pageBack_[launchIndex] = 0;
-                componentPtr->lanuchCount_[launchIndex]++;
-                TRACK_LOG_STR("lanuchCount_[%d] = %d", launchIndex, componentPtr->lanuchCount_[launchIndex]);
-                if (componentPtr->lanuchCount_[launchIndex] > LANUCH_APP_COUNT_MAX) {
-                    componentPtr->bundleFinish_[launchIndex] = true;
-                    ERROR_LOG("Failed to launch the app five times in a row and exit");
-                    componentPtr->lanuchCount_[launchIndex] = 0;
-                    return OHOS::ERR_INVALID_VALUE;
-                }
-            } else {
-                result = ComponentManager::GetInstance()->BackToPrePage();
+            result = JudgeBackResult(componentPtr, launchIndex);
+            if (result != OHOS::ERR_OK) {
+                return result;
             }
         } else {
             auto elementInfo = treemanager->GetElementInfoByOrder();
@@ -214,7 +226,6 @@ ErrCode ComponentInput::OrderInput(const std::shared_ptr<SpcialTestObject>& spec
             }
         }
     }
-
     // check current bundle finished state.
     if (CheckInputFinished(componentPtr)) {
         componentPtr->isAllFinished_ = true;
