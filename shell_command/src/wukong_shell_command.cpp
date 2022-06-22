@@ -107,7 +107,7 @@ ErrCode WuKongShellCommand::RunStopCommand()
 ErrCode WuKongShellCommand::RunTestCommand()
 {
     TRACK_LOG_STD();
-    int res = OHOS::ERR_OK;
+    ErrCode res = OHOS::ERR_OK;
     // get testFlow by cmd_ of ShellCommand
     std::shared_ptr<TestFlow> testFlow = TestFlowFactory::GetTestFlow(*this, cmd_);
     if (testFlow == nullptr) {
@@ -117,6 +117,8 @@ ErrCode WuKongShellCommand::RunTestCommand()
 
     auto cm = ComponentManager::GetInstance();
     if (cm == nullptr) {
+        ERROR_LOG("cm is nullptr");
+        return OHOS::ERR_INVALID_VALUE;
     }
     uint32_t handle = cm->AddRegisterListener(testFlow);
 

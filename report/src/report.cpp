@@ -40,7 +40,7 @@
 namespace OHOS {
 namespace WuKong {
 namespace {
-const uint32_t SEGMENT_STATISTICS_LENGTH = 20;
+const uint32_t SEGMENT_STATISTICS_LENGTH = 10;
 }  // namespace
 using namespace OHOS::AAFwk;
 Report::Report()
@@ -151,7 +151,7 @@ void Report::SyncInputInfo(std::shared_ptr<InputedMsgObject> inputedMsgObject)
     abilityDataSet_->FilterData(data);
     taskCount_++;
     DEBUG_LOG_STR("taskCount{%d}", taskCount_);
-    // statistics and storage every 100 data
+    // statistics and storage every 10 data
     if ((taskCount_ % SEGMENT_STATISTICS_LENGTH) == 0) {
         SegmentedWriteCSV();
         SegmentedWriteJson();
@@ -320,34 +320,38 @@ void Report::CrashFileRecord()
 {
     std::unique_lock<std::mutex> locker(crashMtx_);
     struct dirent *dp;
-    DIR *dirp;
+    DIR *dirpCrash = nullptr;
+    DIR *dirpHilog = nullptr;
     std::shared_ptr<WuKongUtil> utilPtr = WuKongUtil::GetInstance();
-    for (auto iter : crashDirs_) {
-        DIR *dirp;
-        struct dirent *dp;
-        dirp = opendir(iter.c_str());
-        while ((dp = readdir(dirp)) != NULL) {
-            std::string targetFile(dp->d_name);
-            if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0)) {
-                std::vector<std::string>::iterator iterDir = find(crashFiles_.begin(), crashFiles_.end(), targetFile);
-                if (iterDir == crashFiles_.end()) {
-                    DEBUG_LOG_STR("iter{%s}", iter.c_str());
-                    if (utilPtr->CheckFileStatus(iter.c_str()) &&
-                        utilPtr->CheckFileStatus(reportExceptionDir_.c_str())) {
-                        DEBUG_LOG("copy action");
-                        std::string destLocation = reportExceptionDir_ + targetFile;
-                        std::string srcFilePath = iter + targetFile;
-                        utilPtr->CopyFile(srcFilePath.c_str(), destLocation.c_str());
-                        crashFiles_.push_back(std::string(dp->d_name));
-                        ExceptionRecord(targetFile);
-                    }
+    dirpCrash = opendir(crashDir_.c_str());
+    if (dirpCrash == nullptr) {
+        ERROR_LOG_STR("dir{%s} opendir error", crashDir_.c_str());
+        return;
+    }
+    while ((dp = readdir(dirpCrash)) != NULL) {
+        std::string targetFile(dp->d_name);
+        if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0)) {
+            std::vector<std::string>::iterator iterDir = find(crashFiles_.begin(), crashFiles_.end(), targetFile);
+            if (iterDir == crashFiles_.end()) {
+                if (utilPtr->CheckFileStatus(crashDir_.c_str()) &&
+                    utilPtr->CheckFileStatus(reportExceptionDir_.c_str())) {
+                    DEBUG_LOG("copy action");
+                    std::string destLocation = reportExceptionDir_ + targetFile;
+                    std::string srcFilePath = crashDir_ + targetFile;
+                    utilPtr->CopyFile(srcFilePath.c_str(), destLocation.c_str());
+                    crashFiles_.push_back(std::string(dp->d_name));
+                    ExceptionRecord(targetFile);
                 }
             }
         }
-        (void)closedir(dirp);
     }
-    dirp = opendir(hilogDirs_.c_str());
-    while ((dp = readdir(dirp)) != NULL) {
+    (void)closedir(dirpCrash);
+    dirpHilog = opendir(hilogDirs_.c_str());
+    if (dirpHilog == nullptr) {
+        ERROR_LOG_STR("dir{%s} opendir error", hilogDirs_.c_str());
+        return;
+    }
+    while ((dp = readdir(dirpHilog)) != NULL) {
         std::string targetFile(dp->d_name);
         if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0)) {
             if (utilPtr->CheckFileStatus(reportExceptionDir_.c_str()) && utilPtr->CheckFileStatus(hilogDirs_.c_str())) {
@@ -358,7 +362,7 @@ void Report::CrashFileRecord()
             }
         }
     }
-    (void)closedir(dirp);
+    (void)closedir(dirpHilog);
 }
 
 void Report::ExceptionRecord(const std::string &exceptionFilename)
@@ -387,22 +391,20 @@ void Report::ExceptionRecord(const std::string &exceptionFilename)
 
 void Report::CrashFileClear()
 {
-    for (auto iter : crashDirs_) {
-        DIR *dirp;
-        struct dirent *dp;
-        dirp = opendir(iter.c_str());
-        while ((dp = readdir(dirp)) != NULL) {
-            std::string targetFile(dp->d_name);
-            if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0)) {
-                std::string srcFilePath = iter + targetFile;
-                int ret = unlink(srcFilePath.c_str());
-                if (ret != 0) {
-                    std::cout << "file clear error" << std::endl;
-                }
+    DIR *dirp;
+    struct dirent *dp;
+    dirp = opendir(crashDir_.c_str());
+    while ((dp = readdir(dirp)) != NULL) {
+        std::string targetFile(dp->d_name);
+        if ((strcmp(dp->d_name, ".") != 0) && (strcmp(dp->d_name, "..") != 0)) {
+            std::string srcFilePath = crashDir_ + targetFile;
+            int ret = unlink(srcFilePath.c_str());
+            if (ret != 0) {
+                std::cout << "file clear error" << std::endl;
             }
         }
-        (void)closedir(dirp);
     }
+    (void)closedir(dirp);
 }
 
 void Report::Finish()

@@ -152,9 +152,8 @@ int main(int argc, char* argv[])
     InitSemaphore(semRun, 1);
     NamedSemaphore semStop(SEMPHORE_STOP_NAME, 1);
     InitSemaphore(semStop, 1);
-
+    WuKongShellCommand cmd(argc, argv);
     if (isStop) {
-        WuKongShellCommand cmd(argc, argv);
         std::cout << cmd.ExecCommand();
     } else {
         if (IsRunning(semRun)) {
@@ -162,7 +161,6 @@ int main(int argc, char* argv[])
         } else {
             semRun.Open();
             semRun.Wait();
-            WuKongShellCommand cmd(argc, argv);
             std::cout << cmd.ExecCommand();
             semRun.Post();
             semRun.Close();

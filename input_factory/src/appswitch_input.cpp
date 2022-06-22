@@ -15,8 +15,6 @@
 
 #include "appswitch_input.h"
 
-#include <unistd.h>
-
 #include "input_manager.h"
 #include "report.h"
 #include "wukong_define.h"

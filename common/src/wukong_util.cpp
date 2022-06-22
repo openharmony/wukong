@@ -414,9 +414,9 @@ bool WuKongUtil::CopyFile(const char *sourceFile, const char *destFile)
 
 bool WuKongUtil::CheckFileStatus(const char *dir)
 {
-    char filepath[PATH_MAX];
-    memset(filepath, 0, sizeof(char) * PATH_MAX);
-    if (!realpath(dir, filepath)) {
+    char filepath[PATH_MAX] = {'\0'};
+    char *realPath = realpath(dir, filepath);
+    if (realPath == nullptr) {
         ERROR_LOG("failed to get file path");
         return false;
     }
