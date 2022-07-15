@@ -14,6 +14,10 @@
  */
 
 #include "filter.h"
+#include "__functional_base"
+#include "map"
+#include "string"
+#include "vector"
 
 namespace OHOS {
 namespace WuKong {

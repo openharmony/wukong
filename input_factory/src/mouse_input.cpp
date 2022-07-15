@@ -14,11 +14,15 @@
  */
 
 #include "mouse_input.h"
-
-#include "input_manager.h"
 #include "multimode_manager.h"
 #include "wukong_define.h"
 #include "report.h"
+#include <stdint.h>
+#include "input_msg_object.h" 
+#include "pointer_event.h"
+#include "stdlib.h"
+#include "string" 
+#include "wukong_util.h" 
 
 namespace OHOS {
 namespace WuKong {

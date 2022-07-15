@@ -17,10 +17,8 @@
 #define TEST_WUKONG_FILTER_H
 
 #include <map>
-#include <string>
 #include <vector>
-
-#include "wukong_define.h"
+#include "iosfwd"
 
 namespace OHOS {
 namespace WuKong {

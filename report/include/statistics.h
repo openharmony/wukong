@@ -18,10 +18,8 @@
 
 #include <map>
 #include <memory>
-#include <string>
-
-#include "table.h"
-#include "wukong_define.h"
+#include "iosfwd"
+#include "vector"
 
 namespace OHOS {
 namespace WuKong {

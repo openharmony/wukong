@@ -17,6 +17,14 @@
 
 #include <iomanip>
 #include <sstream>
+#include <stdint.h>
+#include <string>
+#include "ios"
+#include "ostream"
+#include "streambuf"
+#include "string"
+#include "table.h"
+#include "vector"
 
 namespace OHOS {
 namespace WuKong {

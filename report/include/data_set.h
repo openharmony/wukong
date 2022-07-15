@@ -20,12 +20,9 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "__functional_base"
+#include "iosfwd"
 
-#include "filter.h"
-#include "format.h"
-#include "statistics.h"
-#include "table.h"
-#include "wukong_define.h"
 namespace OHOS {
 namespace WuKong {
 class DataSet {

@@ -16,10 +16,10 @@
 #ifndef TEST_WUKONG_MOUSE_INPUT_H
 #define TEST_WUKONG_MOUSE_INPUT_H
 
-#include <string>
-
 #include "input_action.h"
-#include "input_msg_object.h"
+#include "errors.h"
+#include "iosfwd"
+#include "memory"
 
 namespace OHOS {
 namespace WuKong {

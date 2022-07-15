@@ -16,10 +16,8 @@
 #ifndef TEST_WUKONG_FORMAT_H
 #define TEST_WUKONG_FORMAT_H
 
-#include <string>
-
-#include "table.h"
-#include "wukong_define.h"
+#include "iosfwd"
+#include "memory"
 
 namespace OHOS {
 namespace WuKong {

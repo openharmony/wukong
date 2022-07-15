@@ -15,8 +15,15 @@
 
 #include "data_set.h"
 
-#include <iostream>
 #include <string>
+#include "__config"
+#include "filter.h"
+#include "format.h"
+#include "map"
+#include "memory"
+#include "statistics.h"
+#include "vector"
+#include "wukong_define.h"
 
 namespace OHOS {
 namespace WuKong {
