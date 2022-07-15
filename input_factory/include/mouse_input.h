@@ -17,9 +17,6 @@
 #define TEST_WUKONG_MOUSE_INPUT_H
 
 #include "input_action.h"
-#include "errors.h"
-#include "iosfwd"
-#include "memory"
 
 namespace OHOS {
 namespace WuKong {

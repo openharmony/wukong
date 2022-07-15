@@ -17,8 +17,6 @@
 #define TEST_WUKONG_FORMAT_CSV_H
 
 #include "format.h"
-#include "iosfwd"
-#include "memory"
 
 namespace OHOS {
 namespace WuKong {

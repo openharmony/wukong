@@ -17,8 +17,6 @@
 #define TEST_WUKONG_KEYBOARD_INPUT_H
 
 #include "input_action.h"
-#include "errors.h"
-#include "memory"
 
 namespace OHOS {
 namespace WuKong {

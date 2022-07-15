@@ -18,7 +18,6 @@
 
 #include <map>
 #include <vector>
-#include "iosfwd"
 
 namespace OHOS {
 namespace WuKong {

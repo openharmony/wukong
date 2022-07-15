@@ -14,9 +14,6 @@
  */
 
 #include "table.h"
-#include <stdint.h>
-#include "string"
-#include "vector"
 
 namespace OHOS {
 namespace WuKong {

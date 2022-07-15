@@ -20,8 +20,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "__functional_base"
-#include "iosfwd"
 
 namespace OHOS {
 namespace WuKong {
