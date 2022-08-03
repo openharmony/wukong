@@ -67,15 +67,14 @@ void ListenCrashDir()
     while ((len = read(fd, buf, sizeof(buf) - 1)) > 0) {
         nread = 0;
         while (len > 0) {
-            event = (struct inotify_event *)&buf[nread];
-            if (event->mask & IN_CLOSE_WRITE) {
+            void* middleType =  static_cast<void *>(&buf[nread]);
+            event = static_cast<struct inotify_event *>(middleType);
+            if ((event->mask & IN_CLOSE_WRITE) && (event->len > 0)) {
                 DEBUG_LOG_STR("event->mask{%x}", event->mask);
-                if (event->len > 0) {
-                    std::string targetFile(event->name);
-                    WuKongUtil::GetInstance()->CopyFile(targetFile, crashDir, destDir);
-                    DEBUG_LOG_STR("%s --- IN_CLOSE_WRITE\n", event->name);
-                    Report::GetInstance()->ExceptionRecord(targetFile);
-                }
+                std::string targetFile(event->name);
+                WuKongUtil::GetInstance()->CopyFile(targetFile, crashDir, destDir);
+                DEBUG_LOG_STR("%s --- IN_CLOSE_WRITE\n", event->name);
+                Report::GetInstance()->ExceptionRecord(targetFile);
             }
             nread = nread + sizeof(struct inotify_event) + event->len;
             len = len - sizeof(struct inotify_event) - event->len;
@@ -481,6 +480,5 @@ std::string Report::GetReportExceptionDir()
 {
     return reportExceptionDir_;
 }
-
 }  // namespace WuKong
 }  // namespace OHOS
