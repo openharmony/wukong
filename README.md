@@ -106,7 +106,7 @@ Random test: wukong exec main command, -s parameter set random seed, 10 is the s
 ## Five、Release Version releaseNote
 
 1、3.2.0.0 version
-> Content of the release：Pre-made Wukong supports the following functions
+> Content of the release：Pre-made Wukong supports the following functions<br>
 > 1、Support collecting app pull up, setting random seed, setting app pull up interval, setting app pull up times, and querying app pull up bundle name and ability name;<br>
 > 2、Support random injection of events, support random injection of controls, support sleep and wake up special tests, support control sequence traversal screenshots special tests;<br>
 > 3、Supports WUkong run log printing;<br>
