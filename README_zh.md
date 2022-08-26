@@ -29,14 +29,14 @@ OpenHarmony稳定性测试自动化工具，通过模拟用户行为，对OpenHa
 
 2.1. 构建方式
 ```
-    ./build.sh --product-name rk3568 --build-target wukong
+./build.sh --product-name rk3568 --build-target wukong
 ```
 2.2. 推送方式
 ```
-    hdc_std shell mount -o rw,remount /
-    hdc_std file send wukong /
-    hdc_std shell chmod a+x /wukong
-    hdc_std shell mv /wukong /bin/
+hdc_std shell mount -o rw,remount /
+hdc_std file send wukong /
+hdc_std shell chmod a+x /wukong
+hdc_std shell mv /wukong /bin/
 ```
 
 ## 功能特性
@@ -78,7 +78,7 @@ OpenHarmony稳定性测试自动化工具，通过模拟用户行为，对OpenHa
 # wukong special -C [bundlename] -p
 ```
 专项测试示例解析：
-| 命令           | 命令           | 说明                                           |
+| 命令           | 参数值           | 说明                                           |
 | -------------- |-------------- | ---------------------------------------------- |
 | wukong special |  | 主命令。                             |
 | -C [bundlename]    |[bundlename] | 控件顺序遍历测试参数设置，bundlename为测试应用名称。            |
